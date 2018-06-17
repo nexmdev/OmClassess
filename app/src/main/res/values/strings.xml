@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">OmClasses</string>
+    <string-array name="subject_names">
+        <item>physics</item>
+        <item>chemistry</item>
+        <item>maths</item>
+    </string-array>
+
+    <string-array name="class_name">
+        <item>11th</item>
+        <item>12th</item>
+    </string-array>
+
+    <string-array name="search_type">
+        <item>student</item>
+        <item>date</item>
+    </string-array>
+
+    <string-array name="duration_year">
+        <item>2016-2017</item>
+        <item>2017-2018</item>
+        <item>2018-2019</item>
+        <item>2019-2020</item>
+    </string-array>
+
+
+</resources>

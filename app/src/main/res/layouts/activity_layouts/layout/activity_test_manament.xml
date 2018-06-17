@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:padding="10dp"
+    tools:context="ltd.akhbod.omclasses.TestManagmentActivity">
+
+    <Button
+        android:id="@+id/TestManagment_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/holo_orange_light"
+        android:text="upload" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_orange_light"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:id="@+id/TestManagment_dateText"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/baseline_calendar_today_black_24dp"
+                android:drawablePadding="10dp"
+                android:hint="Set Date"
+                android:textSize="18dp" />
+
+
+            <Spinner
+                android:id="@+id/TestManagment_subjectSpinner"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:id="@+id/TestManagment_classSpinner"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"/>
+
+        </LinearLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/TestManagment_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical"
+            android:paddingTop="10dp" >
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+</FrameLayout>

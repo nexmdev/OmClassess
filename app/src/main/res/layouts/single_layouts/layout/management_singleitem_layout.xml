@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:background="@android:color/white"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/manage_singleSitem_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center_vertical"
+        android:text="Manisha Mahesh Bodulwa"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/manage_singleSitem_P"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/green"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="P"
+        android:textColor="@android:color/background_dark"
+        android:textSize="25dp" />
+
+    <TextView
+        android:id="@+id/manage_singleSitem_A"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="A"
+        android:textColor="@android:color/background_dark"
+        android:textSize="25dp" />
+
+    <ImageButton
+        android:id="@+id/manage_singleSitem_massageBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        android:background="@drawable/ic_message_black_24dp"
+        android:clickable="false"
+        android:src="@drawable/ic_done_black_24dp" />
+
+
+</LinearLayout>
