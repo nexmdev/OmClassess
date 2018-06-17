@@ -76,8 +76,9 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         progressBar = (ProgressBar)findViewById(R.id.search_progressBar) ;
         noDataTextView = findViewById(R.id.search_no_data_textview);
 
+        int month = Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
         datePickerDialog = new DatePickerDialog(
-                SearchActivity.this,  SearchActivity.this, 2018,5,
+                SearchActivity.this,  SearchActivity.this, year,month,
                 1);
 
 
