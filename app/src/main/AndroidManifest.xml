@@ -24,7 +24,8 @@
         <activity android:name=".TestManagmentActivity" />
         <activity android:name=".RecordActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".RecordTestActivity"></activity>
+        <activity android:name=".RecordTestActivity"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>
