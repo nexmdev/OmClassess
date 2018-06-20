@@ -50,6 +50,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     //Activity variables
     DatePickerDialog datePickerDialog;
     private String mSearchTypeText,mSelectedStanderdText,durationText;
+    private int searchTest;
 
     //firebase variables
     private DatabaseReference mDatabaseRef;
