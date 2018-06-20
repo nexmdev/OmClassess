@@ -36,6 +36,7 @@ public class RecordActivity extends AppCompatActivity {
     private TextView physicsAttendence,chemistryAttendence,mathsAttendence;
     private RecyclerView mRecyclerView;
     private ImageView studentPhoto;
+    private int recordTest;
     //Activity variables
     private String sName,nSchool,nAddress,nMobNo,studentID,mSelectedStanderd,photoUrl;
 
