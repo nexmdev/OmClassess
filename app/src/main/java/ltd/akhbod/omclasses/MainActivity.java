@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mUploadBtn,mRecordBtn,mTestManagment;
    private FirebaseAuth auth;
-   private int mainTest;
+   private int mainTestVariable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
