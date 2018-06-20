@@ -49,6 +49,8 @@ public class UploadActivity extends AppCompatActivity {
     private File actualImage;
     private File compressedImage;
     private String selectedStanderd,selectedDuration;
+    private int uploadTest;
+
 
     //layout variables
     private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText;
