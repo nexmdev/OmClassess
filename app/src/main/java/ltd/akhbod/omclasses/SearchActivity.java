@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -47,14 +48,15 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     private ProgressBar progressBar;
     private TextView noDataTextView;
 
+
     //Activity variables
     DatePickerDialog datePickerDialog;
     private String mSearchTypeText,mSelectedStanderdText,durationText;
-    private int searchTest;
 
     //firebase variables
     private DatabaseReference mDatabaseRef;
     private FirebaseRecyclerAdapter<SearchByDateDetails, SearchByDate_Search> testAdapter=null;
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -125,9 +127,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
             @Override
             public void afterTextChanged(Editable s) {
-              //  progressBar.setVisibility(View.VISIBLE);
-              //  if(mSearchTypeText.equals("student")) firebaseStudentSearch(s.toString());
-              //  else if(mSearchTypeText.equals("date")) firebaseTestSearch(s.toString());
+
             }
         });
 
@@ -144,6 +144,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),"search"+mSearchField.getText().toString(),Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.VISIBLE);
+
                 if(mSearchTypeText.equals("student")) firebaseStudentSearch(mSearchField.getText().toString());
                 else if(mSearchTypeText.equals("date")) firebaseTestSearch(mSearchField.getText().toString());
             }});
@@ -160,7 +161,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             if(searchText.isEmpty())    query=mDatabaseRef.child(mSelectedStanderdText+"("+durationText+")").child("profile").orderByChild("name");
             else                        query=mDatabaseRef.child(mSelectedStanderdText+"("+durationText+")").child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
 
-        FirebaseRecyclerAdapter<ProfileDetails,SearchByStudent_Search> adapter=new FirebaseRecyclerAdapter <ProfileDetails, SearchByStudent_Search>(
+         FirebaseRecyclerAdapter<ProfileDetails,SearchByStudent_Search> studentAdapter=new FirebaseRecyclerAdapter <ProfileDetails, SearchByStudent_Search>(
                 ProfileDetails.class,
                 R.layout.search_singlestudent_layout,
                 SearchByStudent_Search.class,
@@ -180,8 +181,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             protected void populateViewHolder(SearchByStudent_Search viewHolder, final ProfileDetails model, int position) {
                 viewHolder.setDetails(model,getApplicationContext(),mSelectedStanderdText);
             }};
-        adapter.notifyDataSetChanged();
-        mRecyclerView.setAdapter(adapter);
+
+        mRecyclerView.setAdapter(studentAdapter);
 
 
     }
@@ -213,11 +214,13 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             protected void populateViewHolder(SearchByDate_Search viewHolder, final SearchByDateDetails model, int position) {
                 final String key=testAdapter.getRef(position).getKey();
-                viewHolder.setDetails(model,getApplicationContext(),key,searchText,mSelectedStanderdText);
+                viewHolder.setDetails(testAdapter.getRef(position).getKey(),model,getApplicationContext(),key,searchText,mSelectedStanderdText);
             }};
+
 
         mRecyclerView.setAdapter(testAdapter);
         progressBar.setVisibility(View.INVISIBLE);
+
     }
 
 

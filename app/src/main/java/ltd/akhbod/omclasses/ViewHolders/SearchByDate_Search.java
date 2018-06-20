@@ -25,11 +25,9 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
         mName=mView.findViewById(R.id.search_singleLayout_name);
     }
 
-    public void setDetails(final SearchByDateDetails model, final Context applicationContext, final String key, String searchText, final String mSelectedStanderdText) {
+    public void setDetails(final String date,final SearchByDateDetails model, final Context applicationContext, final String key, String searchText, final String mSelectedStanderdText) {
 
-
-        String testText=key.replace(searchText+"-","");
-        mName.setText(testText);
+        mName.setText(date);
         mName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
