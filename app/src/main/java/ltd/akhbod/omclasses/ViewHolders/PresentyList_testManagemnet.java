@@ -6,6 +6,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class PresentyList_testManagemnet extends RecyclerView.ViewHolder{
     public TextView mPresenetLayout,mAbsentLayout;
     public TextView mName;
     public ImageButton mSendMessage;
-
+    public ProgressBar progressBar;
     public PresentyList_testManagemnet(View itemView) {
         super(itemView);
         mView=itemView;
@@ -32,6 +33,7 @@ public class PresentyList_testManagemnet extends RecyclerView.ViewHolder{
         mPresenetLayout=mView.findViewById(R.id.manage_singleSitem_P);
         mAbsentLayout=mView.findViewById(R.id.manage_singleSitem_A);
         mSendMessage=mView.findViewById(R.id.manage_singleSitem_massageBtn);
+        progressBar = mView.findViewById(R.id.test_managment_single_row_progressbar);
     }
 
 

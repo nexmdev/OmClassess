@@ -37,11 +37,14 @@ public class RecordTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_test);
 
+
         Intent intent=getIntent();
         seperateId_Name(intent.getStringExtra("totalPresent"));
 
         mSelectedStanderd=intent.getStringExtra("class");
         key=intent.getStringExtra("key");
+
+        getSupportActionBar().setTitle(mSelectedStanderd +" / " +key);
 
         ref= FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+"(2018-2019)");
 

@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     RecyclerView recyclerView;
     Button mUpload;
 
+
     //Activity variables
     DatePickerDialog datePickerDialog;
     ArrayList<String> presentArray=new ArrayList<>();
@@ -79,6 +81,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         mSubjectSpinner=findViewById(R.id.TestManagment_subjectSpinner);
         mClassSpinner=findViewById(R.id.TestManagment_classSpinner);
         mUpload=findViewById(R.id.TestManagment_upload);
+
 
         mDateText.setText(currentDate);
 
@@ -163,9 +166,12 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                Log.d("abhi",""+position);
 
            viewHolder.setDetails(getApplicationContext(),model,position);
+
            viewHolder.mSendMessage.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
+                   viewHolder.progressBar.setVisibility(View.VISIBLE);
+                   viewHolder.mSendMessage.setBackgroundResource(R.color.grey);
                     sendSingleMessage("+917775971543","Hii this is Om Class.");
                    //GetCoverage("+918668737792");
                }});
@@ -318,6 +324,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                             Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
                             String[] temp=result.toString().split(": ");
                             MESSAGE_ID=temp[1];
+
                         }
                     });
                 } catch (Exception e) {
