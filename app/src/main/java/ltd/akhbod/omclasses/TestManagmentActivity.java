@@ -149,6 +149,11 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     }
 
     private void setFirebaseAdapter() {
+
+        studentIdArray.clear();
+        studentNamesArray.clear();
+        presentArray.clear();
+
         FirebaseRecyclerAdapter<ProfileDetails,PresentyList_testManagemnet> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<ProfileDetails, PresentyList_testManagemnet>(
 
                ProfileDetails.class,
