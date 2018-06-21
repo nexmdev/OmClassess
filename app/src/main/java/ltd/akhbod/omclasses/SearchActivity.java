@@ -1,6 +1,7 @@
 package ltd.akhbod.omclasses;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -79,8 +80,9 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         progressBar = (ProgressBar)findViewById(R.id.search_progressBar) ;
         noDataTextView = findViewById(R.id.search_no_data_textview);
 
+        int month = Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
         datePickerDialog = new DatePickerDialog(
-                SearchActivity.this,  SearchActivity.this, 2018,5,
+                SearchActivity.this,  SearchActivity.this, year,month-1,
                 1);
 
 
@@ -213,8 +215,25 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             }
             @Override
             protected void populateViewHolder(SearchByDate_Search viewHolder, final SearchByDateDetails model, int position) {
+
                 final String key=testAdapter.getRef(position).getKey();
                 viewHolder.setDetails(testAdapter.getRef(position).getKey(),model,getApplicationContext(),key,searchText,mSelectedStanderdText);
+
+               // final String key1=testAdapter.getRef(position).getKey();
+               // viewHolder.setDetails(model,getApplicationContext(),key1,searchText,mSelectedStanderdText);
+                viewHolder.setOnItemClickListener(new SearchByDate_Search.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View itemView, int position) {
+                        final String key=testAdapter.getRef(position).getKey();
+                        SearchByDateDetails data = testAdapter.getItem(position);
+                        Intent intent = new Intent(getApplicationContext(), RecordTestActivity.class);
+                        intent.putExtra("key",key);
+                        intent.putExtra("totalPresent",data.getTotalPresent());
+                        intent.putExtra("class",mSelectedStanderdText);
+                        startActivity(intent);
+                    }
+                });
+
             }};
 
 

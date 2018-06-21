@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/recordtest_single_postion"
-        android:textSize="18dp"
-        android:text="12)"
-        android:layout_width="30dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"/>
+        android:layout_weight="0.5"
+        android:text="12)"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/recordtest_single_name"
-        android:text="Abhijit Mahesh Bodulwar"
-        android:textSize="18dp"
-        android:layout_width="210dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"/>
+        android:layout_weight="3"
+        android:text="Abhijit Mahesh Bodulwar"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/recordtest_single_editMarksEdit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:background="@color/colorPrimary"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Upload marks"
+        android:inputType="number"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textColorHint="@color/grey"
+        android:textSize="14sp" />
 
-        <EditText
-            android:hint="Marks"
-            android:id="@+id/recordtest_single_editMarksEdit"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:visibility="visible"/>
-
-    </RelativeLayout>
 </LinearLayout>
