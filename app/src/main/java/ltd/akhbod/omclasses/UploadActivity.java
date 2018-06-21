@@ -1,5 +1,7 @@
 package ltd.akhbod.omclasses;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,16 +32,27 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
+import com.mvc.imagepicker.ImagePicker;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import id.zelory.compressor.Compressor;
 import ltd.akhbod.omclasses.ExternalLibrarbyClasses.FileUtil;
 import ltd.akhbod.omclasses.ModalClasses.ProfileDetails;
+
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -67,6 +80,7 @@ public class UploadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+
 
         int year= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
         int nextYear=year+1;
@@ -107,11 +121,7 @@ public class UploadActivity extends AppCompatActivity {
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gintent = new Intent();
-                gintent.setType("image/*");
-                gintent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(
-                        Intent.createChooser(gintent, "Select Picture"),PICK_IMAGE_REQUEST);
+                checkPermission();
             }});
 
 
@@ -146,7 +156,31 @@ public class UploadActivity extends AppCompatActivity {
 
 
             }});
+
+
+
     }
+
+    private void checkPermission() {
+
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ).withListener(new MultiplePermissionsListener() {
+            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
+                       if(report.areAllPermissionsGranted()==true){
+                           ImagePicker.pickImage(UploadActivity.this, "Select your image:");
+                       }
+
+            }
+            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        }).check();
+
+    }
+
 
     private void uploadData(ProfileDetails obj, String pushId) {
 
@@ -230,7 +264,6 @@ public class UploadActivity extends AppCompatActivity {
 
 
 
-
     public String getReadableFileSize(long size) {
         if (size <= 0) {
             return "0";
@@ -246,26 +279,21 @@ public class UploadActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            if (data == null) {
-                Toast.makeText(getApplicationContext(),"Failed to open picture!",Toast.LENGTH_SHORT).show();
-                return;
-            }
+        Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
+        if (bitmap != null) {
+            mImage.setImageBitmap(bitmap);
             try {
-
-                actualImage = FileUtil.from(this, data.getData());
-                mImage.setImageBitmap(BitmapFactory.decodeFile(actualImage.getAbsolutePath()));
-                mOriginalImageText.setText(String.format("Size : %s", getReadableFileSize(actualImage.length())));
-
-                //starts compressing
-                customCompressImage();
-
-
+                String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), bitmap, "Title", null);
+                actualImage = FileUtil.from(this,Uri.parse(path));
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(),"Failed to read picture data!",Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+            mOriginalImageText.setText(String.format("Size : %s", getReadableFileSize(actualImage.length())));
+
+            //starts compressing
+            customCompressImage();
         }
+
 
     }
 }
