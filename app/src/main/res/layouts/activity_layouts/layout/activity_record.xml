@@ -3,218 +3,247 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:nestedScrollingEnabled="true"
     tools:context="ltd.akhbod.omclasses.RecordActivity">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        android:padding="10dp">
 
-
-        <ImageView
-            android:id="@+id/record_student_image_view"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentStart="false"
-            android:layout_alignParentTop="false"
-            android:layout_centerHorizontal="true"
-            android:adjustViewBounds="true"
-            android:background="@color/colorAccent" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
+            android:id="@+id/top_profile_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/record_student_image_view"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/record_student_image_view"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@color/colorAccent" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Full Name     : "
-                android:textSize="16dp" />
+                android:layout_marginLeft="16dp"
+                android:layout_weight="2.5"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:text="Address        : "
-                android:textSize="16dp" />
+                <TextView
+                    android:id="@+id/record_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Abhijit Mahesh Bodulwar"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:text="School           : "
-                android:textSize="16dp" />
+                <TextView
+                    android:id="@+id/record_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Durgamata Ward , Ghatanji"
+                    android:textSize="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:text="Mobile No     : "
-                android:textSize="16dp" />
+                <TextView
+                    android:id="@+id/record_school"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Shri Samarth,Ghatanji"
+                    android:textSize="16dp" />
 
+                <TextView
+                    android:id="@+id/record_phoneno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="+918668737792"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/top_profile_layout"
+            android:background="@android:color/darker_gray" />
+
         <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
+            android:id="@+id/call_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/record_student_image_view"
-            android:layout_marginLeft="130dp"
+            android:layout_below="@+id/textView8"
             android:layout_marginTop="16dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/record_name"
+            <Button
+                android:id="@+id/student_record_call_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Abhijit Mahesh Bodulwar"
-                android:textSize="16dp" />
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/holo_blue_dark"
+                android:text="Call Parents" />
 
-            <TextView
-                android:id="@+id/record_address"
+            <Button
+                android:id="@+id/student_record_sms_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:text="Durgamata Ward , Ghatanji"
-                android:textSize="16dp" />
-
-            <TextView
-                android:id="@+id/record_school"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:text="Shri Samarth,Ghatanji"
-                android:textSize="16dp" />
-
-            <TextView
-                android:id="@+id/record_phoneno"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:text="+918668737792"
-                android:textSize="16dp" />
-
+                android:layout_weight="1"
+                android:background="@android:color/holo_green_light"
+                android:text="Sms Parents" />
         </LinearLayout>
 
         <Button
             android:id="@+id/record_getScoreCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/linearLayout2"
-            android:layout_marginTop="31dp"
+            android:layout_below="@+id/call_layout"
+            android:layout_marginTop="40dp"
             android:background="@color/colorPrimary"
             android:text="GEt scorecard" />
 
         <LinearLayout
             android:id="@+id/record_subjectattendence"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/record_getScoreCard"
-            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:visibility="gone">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Physics       :"
+                    android:gravity="center"
+                    android:text="Physics"
                     android:textSize="18dp" />
 
                 <TextView
                     android:id="@+id/record_physicsScore"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp" />
+                    android:gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="35sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Chemistry   :"
+                    android:gravity="center"
+                    android:text="Chemistry"
                     android:textSize="18dp" />
 
                 <TextView
                     android:id="@+id/record_chemScore"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp" />
+                    android:gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="35sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Maths          :"
+                    android:gravity="center"
+                    android:text="Maths"
                     android:textSize="18dp" />
 
                 <TextView
                     android:id="@+id/record_mathsScore"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp" />
+                    android:gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="35sp" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/record_linearlayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/record_subjectattendence"
-            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:background="@color/green"
             android:orientation="horizontal"
+            android:padding="10dp"
             android:visibility="gone">
 
             <TextView
-                android:layout_width="40dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:text="Date"
-                android:textSize="18dp" />
+                android:textSize="16sp" />
 
             <TextView
-                android:layout_width="60dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="60dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:text="Subject"
-                android:textSize="18dp" />
+                android:textSize="16sp" />
 
             <TextView
-                android:layout_width="75dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:text="Presenty"
-                android:textSize="18dp" />
+                android:textSize="16sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_weight="0.5"
+                android:gravity="center"
                 android:text="Marks"
-                android:textSize="18dp" />
+                android:textSize="16sp" />
 
 
         </LinearLayout>
@@ -222,18 +251,13 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/record_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="470dp"
-            android:layout_alignParentLeft="true"
+            android:layout_height="wrap_content"
             android:layout_below="@id/record_linearlayout"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:visibility="gone"></android.support.v7.widget.RecyclerView>
+            android:nestedScrollingEnabled="false"
+            android:visibility="gone" />
 
 
     </RelativeLayout>
-
-
 
 
 </ScrollView>

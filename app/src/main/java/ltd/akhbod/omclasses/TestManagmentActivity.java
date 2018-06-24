@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -71,8 +72,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         // Initialize the clickatell object:
         ref= FirebaseDatabase.getInstance().getReference();
-        httpApi = new ClickatellHttp("Abhijit_click", "F0Z8U9xLQqm2yTgoUhCFDw== ", "Abhijit@click");
-        getAuth();
+      //  httpApi = new ClickatellHttp("Abhijit_click", "F0Z8U9xLQqm2yTgoUhCFDw== ", "Abhijit@click");
+      //  getAuth();
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
 
@@ -133,7 +134,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
             @Override
             public void onClick(View v) {
              //datePickerDialog.show();
-              StopMessage();
+              //StopMessage();
             }});
 
         mUpload.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +153,9 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     }
 
     private void setFirebaseAdapter() {
+        studentIdArray.clear();
+        studentNamesArray.clear();
+        presentArray.clear();
         FirebaseRecyclerAdapter<ProfileDetails,PresentyList_testManagemnet> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<ProfileDetails, PresentyList_testManagemnet>(
 
                ProfileDetails.class,
@@ -170,9 +174,11 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
            viewHolder.mSendMessage.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-                   viewHolder.progressBar.setVisibility(View.VISIBLE);
+                  // viewHolder.progressBar.setVisibility(View.VISIBLE);
                    viewHolder.mSendMessage.setBackgroundResource(R.color.grey);
-                    sendSingleMessage("+917775971543","Hii this is Om Class.");
+                   viewHolder.mSendMessage.setImageResource(R.drawable.ic_done_black_24dp);
+                   sendMessage(model.getMobNo(),model.getName());
+                   // sendSingleMessage("+917775971543","Hii this is Om Class.");
                    //GetCoverage("+918668737792");
                }});
                studentIdArray.add(position,model.getId());
@@ -200,6 +206,14 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
            }};
         recyclerView.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    private void sendMessage(String mobNo, String name) {
+
+        SmsManager manager = SmsManager.getDefault();
+        String test = "आपला पाल्य "+name+" दि."+currentDate+" ला झालेल्या " +mSelectedSubject +" च्या टेस्ट ला अनुपस्थित होता. ओम क्लासेस";
+        ArrayList<String> parts = manager.divideMessage(test);
+        manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
     }
 
 
