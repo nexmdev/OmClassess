@@ -175,7 +175,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                @Override
                public void onClick(View v) {
                   // viewHolder.progressBar.setVisibility(View.VISIBLE);
-                   viewHolder.mSendMessage.setBackgroundResource(R.color.grey);
+                   viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+                   viewHolder.mSendMessage.setEnabled(false);
                    viewHolder.mSendMessage.setImageResource(R.drawable.ic_done_black_24dp);
                    sendMessage(model.getMobNo(),model.getName());
                    // sendSingleMessage("+917775971543","Hii this is Om Class.");
