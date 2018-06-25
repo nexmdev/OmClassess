@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/OmClassess-master.iml" filepath="$PROJECT_DIR$/OmClassess-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OmClassess.iml" filepath="$PROJECT_DIR$/OmClassess.iml" />
+      <module fileurl="file://C:\Users\ibm\Documents\GitHub\OmClassess\OmClassess-master.iml" filepath="C:\Users\ibm\Documents\GitHub\OmClassess\OmClassess-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

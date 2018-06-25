@@ -71,7 +71,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         // Initialize the clickatell object:
         ref= FirebaseDatabase.getInstance().getReference();
-        httpApi = new ClickatellHttp("Abhijit_click", "F0Z8U9xLQqm2yTgoUhCFDw== ", "Abhijit@click");
+        httpApi = new ClickatellHttp("Abhijit_click", "U3zUw3cKSeaViiv_c5C1OA== ", "Abhijit@click");
         getAuth();
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
@@ -191,6 +191,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                        viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
                        viewHolder.mAbsentLayout.setBackground(null);
                        presentArray.set(position,"yes");
+                       viewHolder.mSendMessage.setEnabled(false);
+
                    }});
 
                viewHolder.mAbsentLayout.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +202,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                        viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
                        viewHolder.mPresenetLayout.setBackground(null);
                        presentArray.set(position,"no");
+                       viewHolder.mSendMessage.setEnabled(true);
                    }});
 
 
@@ -322,13 +325,13 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
             @Override
             public void run() {
                 try {
-                    final ClickatellHttp.Message result = httpApi.sendMessage(number, content);
+                    final ClickatellHttp.Message result = httpApi.sendMessage("918668737792", content);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
                             String[] temp=result.toString().split(": ");
-                            MESSAGE_ID=temp[1];
+                            GetMessageStatus(temp[1]);
 
                         }
                     });
@@ -373,13 +376,14 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
      * This get the status of the given message id. The status will get shown as a toast and in the card.
      *
      * The message ID to do the lookup on.
+     * @param s
      */
-    private void GetMessageStatus() {
+    private void GetMessageStatus(final String s) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final int result = httpApi.getMessageStatus(MESSAGE_ID);
+                    final int result = httpApi.getMessageStatus(s);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
