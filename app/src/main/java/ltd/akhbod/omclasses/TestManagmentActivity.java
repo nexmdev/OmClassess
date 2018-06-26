@@ -1,5 +1,7 @@
 package ltd.akhbod.omclasses;
 
+import android.*;
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
@@ -27,9 +29,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.mvc.imagepicker.ImagePicker;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import ltd.akhbod.omclasses.ExternalLibrarbyClasses.ClickatellHttp;
@@ -70,10 +79,13 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_manament);
 
+
+        //checking permissions
+        checkPermission();
+
         // Initialize the clickatell object:
         ref= FirebaseDatabase.getInstance().getReference();
-      //  httpApi = new ClickatellHttp("Abhijit_click", "F0Z8U9xLQqm2yTgoUhCFDw== ", "Abhijit@click");
-      //  getAuth();
+        httpApi = new ClickatellHttp("Abhijit_click", "U3zUw3cKSeaViiv_c5C1OA== ", "Abhijit@click");
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
 
@@ -153,9 +165,13 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     }
 
     private void setFirebaseAdapter() {
+
+
         studentIdArray.clear();
         studentNamesArray.clear();
         presentArray.clear();
+
+
         FirebaseRecyclerAdapter<ProfileDetails,PresentyList_testManagemnet> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<ProfileDetails, PresentyList_testManagemnet>(
 
                ProfileDetails.class,
@@ -193,6 +209,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                        viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
                        viewHolder.mAbsentLayout.setBackground(null);
                        presentArray.set(position,"yes");
+                       viewHolder.mSendMessage.setEnabled(false);
+
                    }});
 
                viewHolder.mAbsentLayout.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +220,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                        viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
                        viewHolder.mPresenetLayout.setBackground(null);
                        presentArray.set(position,"no");
+                       viewHolder.mSendMessage.setEnabled(true);
                    }});
 
 
@@ -214,7 +233,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         SmsManager manager = SmsManager.getDefault();
         String test = "आपला पाल्य "+name+" दि."+currentDate+" ला झालेल्या " +mSelectedSubject +" च्या टेस्ट ला अनुपस्थित होता. ओम क्लासेस";
         ArrayList<String> parts = manager.divideMessage(test);
-        manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
+        manager.sendMultipartTextMessage("+918329575298",null,parts,null,null);
     }
 
 
@@ -287,10 +306,10 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     }
 
 
-    /**
+    /*
      * This tests for authentication details, to make sure they are correct.
      * Created a toast message on success, or error.
-     */
+
 
     private void getAuth() {
         new Thread(new Runnable() {
@@ -321,24 +340,23 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
 
 
-    /**
+    /*
      * This sends the given message and displays the output. The output is also shown via a toast.
-     *
-     * @param number  The number to send to. Should be in international format.
-     * @param content The message the will be sent.
-     */
+
+
+
     private void sendSingleMessage(final String number, final String content) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final ClickatellHttp.Message result = httpApi.sendMessage(number, content);
+                    final ClickatellHttp.Message result = httpApi.sendMessage("918668737792", content);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
                             String[] temp=result.toString().split(": ");
-                            MESSAGE_ID=temp[1];
+                            GetMessageStatus(temp[1]);
 
                         }
                     });
@@ -352,11 +370,11 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
 
 
-    /**
+    /*
      * This attempts to stop the message of the message ID. It then displays the status of the message in a toast, and on the UI,
      *
      *
-     */
+
     private void StopMessage() {
         new Thread(new Runnable() {
             @Override
@@ -379,17 +397,17 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
 
 
-    /**
+    /*
      * This get the status of the given message id. The status will get shown as a toast and in the card.
      *
      * The message ID to do the lookup on.
-     */
-    private void GetMessageStatus() {
+
+    private void GetMessageStatus(final String s) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final int result = httpApi.getMessageStatus(MESSAGE_ID);
+                    final int result = httpApi.getMessageStatus(s);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -414,6 +432,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                    });
+                } catch (Exception e) {
 
                             if (result < 0) {
 
@@ -424,17 +444,37 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                             }
 
                         }
-                    });
-                } catch (Exception e) {
                     ShowException(e);
                 }
             }
         }).start();
     }
 
+*/
 
 
 
+    private void checkPermission() {
+
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.SEND_SMS
+                ).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if (report.areAllPermissionsGranted() == true) {
+                    Toast.makeText(getApplicationContext(), "You can now send SMS", Toast.LENGTH_SHORT).show();
+                   }
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        }).check();
+    }
 
 
     private void ShowException(final Exception exception) {

@@ -47,17 +47,11 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
     }
 
 
-    public void setDetails(final String date,final SearchByDateDetails model, final Context applicationContext, final String key, String searchText, final String mSelectedStanderdText) {
+    public void setDetails(final SearchByDateDetails model, final Context applicationContext, final String key, String searchText, final String mSelectedStanderdText) {
 
-        mName.setText(date);
-       // mName.setOnClickListener(new View.OnClickListener() {
+        mName.setText(key);
 
-  //  public void setDetails(final SearchByDateDetails model, final Context applicationContext,String key,  String searchText, final String mSelectedStanderdText) {
-
-
-       // String testText=key.replace(searchText+"-","");
-       // mName.setText(testText);
-       /* mName.setOnClickListener(new View.OnClickListener() {
+         mName.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -71,7 +65,7 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
                 applicationContext.startActivity(intent);
 
             }
-        });*/
+        });
 
     }
 }

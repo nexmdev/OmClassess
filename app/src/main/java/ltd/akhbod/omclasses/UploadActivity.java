@@ -161,25 +161,7 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
-    private void checkPermission() {
 
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ).withListener(new MultiplePermissionsListener() {
-            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
-                       if(report.areAllPermissionsGranted()==true){
-                           ImagePicker.pickImage(UploadActivity.this, "Select your image:");
-                       }
-
-            }
-            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                token.continuePermissionRequest();
-            }
-        }).check();
-
-    }
 
 
     private void uploadData(ProfileDetails obj, String pushId) {
@@ -273,6 +255,27 @@ public class UploadActivity extends AppCompatActivity {
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
+
+
+    private void checkPermission() {
+
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ).withListener(new MultiplePermissionsListener() {
+            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if(report.areAllPermissionsGranted()==true){
+                    ImagePicker.pickImage(UploadActivity.this, "Select your image:");
+                }
+
+            }
+            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        }).check();
+
+    }
 
 
     @Override
