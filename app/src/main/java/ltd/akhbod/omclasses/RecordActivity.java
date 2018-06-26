@@ -50,6 +50,7 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
+        getSupportActionBar().setTitle("Student Record");
         Intent intent=getIntent();
         sName=intent.getStringExtra("name");
         nSchool=intent.getStringExtra("schoolname");
@@ -81,7 +82,7 @@ public class RecordActivity extends AppCompatActivity {
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        attachFirebaseRecycler();
         mGetScorecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +91,7 @@ public class RecordActivity extends AppCompatActivity {
              subjectAttendenceIndex.setVisibility(View.VISIBLE);
 
              attendenceQueryEachSubject();
-             attachFirebaseRecycler();
+
             }});
 
     }

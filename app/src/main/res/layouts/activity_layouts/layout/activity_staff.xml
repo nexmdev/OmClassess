@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    tools:context="ltd.akhbod.omclasses.StaffActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="MIGRATION"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="2.5">
+
+            <TextView
+                android:id="@+id/staff_migrateClass"
+                android:textSize="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                tools:ignore="Suspicious0dp" />
+
+            <TextView
+                android:id="@+id/staff_migrateFrom"
+                android:textSize="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:ignore="Suspicious0dp" />
+
+            <TextView
+                android:id="@+id/staff_migrateTo"
+                android:textSize="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:ignore="Suspicious0dp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/staff_migrateBtn"
+            android:text="migrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="140dp">
+    <TextView
+        android:text="Deletion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/staff_deletSpinner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"></Spinner>
+
+    <TextView
+        android:id="@+id/staff_deleteClassText"
+        android:text="2018-2019"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/staff_deleteBtn"
+        android:text="Delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>

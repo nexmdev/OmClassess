@@ -1,5 +1,6 @@
 package ltd.akhbod.omclasses.ViewHolders;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -28,8 +29,13 @@ public class StudentScorecard_record extends RecyclerView.ViewHolder {
     public void setSingleRecord(String date, String subject, String presenty, String marks) {
 
         mDate.setText(date);
-        mSubject.setText(subject);
+       //mSubject.setText(subject);
         mPresenty.setText(presenty);
+        if(presenty.matches("yes")){
+            mPresenty.setTextColor(Color.GREEN);
+        }else{
+            mPresenty.setTextColor(Color.RED);
+        }
         mMarks.setText(marks);
     }
 }
