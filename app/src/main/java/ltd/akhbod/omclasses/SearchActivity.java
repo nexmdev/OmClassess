@@ -216,7 +216,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             protected void populateViewHolder(SearchByDate_Search viewHolder, final SearchByDateDetails model, int position) {
                 final String key=testAdapter.getRef(position).getKey();
-                viewHolder.setDetails(testAdapter.getRef(position).getKey(),model,getApplicationContext(),key,searchText,mSelectedStanderdText);
+                viewHolder.setDetails(model,getApplicationContext(),key,searchText,mSelectedStanderdText);
             }};
 
 
