@@ -5,11 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ImageView mLogoImage;
     private Button mUploadBtn,mRecordBtn,mTestManagment;
     private FirebaseAuth auth;
     @Override
@@ -22,9 +24,19 @@ public class MainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         auth.signInAnonymously();
+
+        mLogoImage=findViewById(R.id.imageView2);
         mUploadBtn=findViewById(R.id.main_upload);
         mRecordBtn=findViewById(R.id.main_record);
         mTestManagment=findViewById(R.id.main_testManagmnt);
+
+        mLogoImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getApplicationContext(),StaffActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mUploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
