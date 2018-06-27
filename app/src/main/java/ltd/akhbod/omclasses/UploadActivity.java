@@ -116,7 +116,7 @@ public class UploadActivity extends AppCompatActivity {
             }
         });
 
-
+        selectedStanderd="11th";
         
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +130,7 @@ public class UploadActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 String mNameText,mAddressText,mSchoolText,mMobNoText,mImageUrl="2n38u1e",mId=pushId;
+                pushId=ref.push().getKey().toString();
 
                 mNameText=mNameEditText.getText().toString();
                 mAddressText=mAddressEditText.getText().toString();

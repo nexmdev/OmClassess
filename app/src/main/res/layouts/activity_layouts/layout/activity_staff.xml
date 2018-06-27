@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/staff_migrateClass"
-                android:textSize="24dp"
+                android:textSize="18dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
@@ -34,7 +34,8 @@
 
             <TextView
                 android:id="@+id/staff_migrateFrom"
-                android:textSize="24dp"
+                android:text="nothing to migrate"
+                android:textSize="18dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -42,7 +43,7 @@
 
             <TextView
                 android:id="@+id/staff_migrateTo"
-                android:textSize="24dp"
+                android:textSize="18dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -75,7 +76,7 @@
 
     <TextView
         android:id="@+id/staff_deleteClassText"
-        android:text="2018-2019"
+        android:text="nothig to delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
