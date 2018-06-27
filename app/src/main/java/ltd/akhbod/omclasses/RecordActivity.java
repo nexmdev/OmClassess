@@ -1,17 +1,24 @@
 package ltd.akhbod.omclasses;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -24,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import ltd.akhbod.omclasses.ModalClasses.RecordDetails;
 import ltd.akhbod.omclasses.ViewHolders.StudentScorecard_record;
 
@@ -31,14 +40,15 @@ public class RecordActivity extends AppCompatActivity {
 
     //layout variables
     private TextView mName,mSchool,mAddress,mMobNo;
-    private Button mGetScorecard;
+    private Button mGetScorecard,smsParent,callParent;
     private LinearLayout mIndex,subjectAttendenceIndex;
     private TextView physicsAttendence,chemistryAttendence,mathsAttendence;
     private RecyclerView mRecyclerView;
     private ImageView studentPhoto;
 
     //Activity variables
-    private String sName,nSchool,nAddress,nMobNo,studentID,mSelectedStanderd,photoUrl;
+    private String sName,nSchool,nAddress,nMobNo,studentID,
+            mSelectedStanderd,photoUrl,finalMessage;
 
 
     //firebase variables
@@ -78,6 +88,15 @@ public class RecordActivity extends AppCompatActivity {
         mRecyclerView=findViewById(R.id.record_recyclerview);
         studentPhoto = findViewById(R.id.record_student_image_view);
 
+        smsParent = findViewById(R.id.student_record_sms_button);
+        callParent = findViewById(R.id.student_record_call_button);
+
+        smsParent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchSMSDlg();
+            }
+        });
         //setting up recyclerview
 
         mRecyclerView.setHasFixedSize(true);
@@ -181,6 +200,83 @@ public class RecordActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
+    private void launchSMSDlg() {
+        final Dialog dialog;
+
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.record_dialog_layout);
+        dialog.setCanceledOnTouchOutside(true);
+
+        Button b1 = dialog.findViewById(R.id.record_dialog_sms_button_one);
+        Button b2 = dialog.findViewById(R.id.record_dialog_sms_button_two);
+        Button bfinal = dialog.findViewById(R.id.record_dialog_sms_button_send);
+
+        final EditText sms1 = dialog.findViewById(R.id.record_dialog_sms_edittext_one);
+        final EditText sms2 = dialog.findViewById(R.id.record_dialog_sms_edittext_two);
+
+        String message1 = "आपला पाल्य "+sName+" मागिल -- दिवसांपासुन टयूशन ला अनुपस्थित आहे. ओम क्लासेस";
+        sms1.setText(message1);
+        String message2 = "आपला पाल्य "+sName+" टयूशन च्या टेस्ट्स ला सतत अनुपस्थित आहे. ओम क्लासेस";
+        sms2.setText(message2);
+
+
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finalMessage = sms1.getText().toString();
+                ((Button)v).setText("Selected !");
+                ((Button)v).setBackgroundResource(R.color.grey);
+                ((Button)v).setEnabled(false);
+
+            }
+        });
+
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                finalMessage = sms2.getText().toString();
+                ((Button)v).setText("Selected !");
+                ((Button)v).setBackgroundResource(R.color.grey);
+                ((Button)v).setEnabled(false);
+            }
+        });
+        bfinal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(finalMessage==null){
+                    Toast.makeText(getApplicationContext(),"Select Message",Toast.LENGTH_SHORT).show();
+
+
+                }else{
+                    SmsManager manager = SmsManager.getDefault();
+                    ArrayList<String> parts = manager.divideMessage(finalMessage);
+                    manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
+                    Toast.makeText(getApplicationContext(),"SMS sent successfully",Toast.LENGTH_SHORT).show();
+                    ((Button)v).setText("Successfully sent !");
+                    v.setBackgroundResource(R.color.grey);
+                    ((Button) v).setTextColor(Color.BLUE);
+
+                    v.setEnabled(false);
+                    // dialog.dismiss();
+                }
+
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+    }
+
+
+
 
 
 }
