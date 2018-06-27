@@ -242,13 +242,14 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         //making combine string
 
                 int count=0;
+                int tempCount=0;
                 final StringBuffer totalPresent=new StringBuffer();
                 while ( count < presentArray.size()){
                       String temp;
 
                     if(presentArray.get(count).equals("no")){count++; continue; }
 
-                      if(count == 0){   temp=studentNamesArray.get(count)+"="+studentIdArray.get(count);}
+                      if(tempCount == 0){   temp=studentNamesArray.get(count)+"="+studentIdArray.get(count); tempCount++;}
                       else
                           temp=","+studentNamesArray.get(count)+"="+studentIdArray.get(count) ;
 
