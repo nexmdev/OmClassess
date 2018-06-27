@@ -81,7 +81,7 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-
+        getSupportActionBar().setTitle("Upload Student");
         int year= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
         int nextYear=year+1;
         selectedDuration=year+"-"+nextYear;
@@ -147,7 +147,7 @@ public class UploadActivity extends AppCompatActivity {
                 }else if(mSchoolText.isEmpty()){
                     mSchoolEditText.setError("Please enter school");
                     return;
-                }else if(mMobNoText.isEmpty() || mMobNoText.length()<10){
+                }else if(mMobNoText.isEmpty() || mMobNoText.length()!= 10){
                     mMobNoEditText.setError("Please enter valid mobile number");
                     return;
                 }

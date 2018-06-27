@@ -12,9 +12,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/om_launcher_two"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/om_launcher_two"
         android:theme="@style/AppTheme">
         <provider
             android:name="android.support.v4.content.FileProvider"
