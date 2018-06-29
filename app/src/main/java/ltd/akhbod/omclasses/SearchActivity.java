@@ -28,9 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 import java.util.Locale;
@@ -53,10 +56,10 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     //Activity variables
     DatePickerDialog datePickerDialog;
-    private String mSearchTypeText,mSelectedStanderdText,durationText;
+    private String SearchTypeText,SelectedStanderdText,durationText;
 
     //firebase variables
-    private DatabaseReference mDatabaseRef;
+    private DatabaseReference databaseRef;
     private FirebaseRecyclerAdapter<SearchByDateDetails, SearchByDate_Search> testAdapter=null;
 
 
@@ -67,9 +70,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         setContentView(R.layout.activity_search);
 
         getSupportActionBar().setTitle("Search Record");
-        int year= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
-        int nextYear=year+1;
-        durationText=year+"-"+nextYear;
+
+        databaseRef = FirebaseDatabase.getInstance().getReference();
 
         mSearchField = findViewById(R.id.search_field);
         mSearchTypeSpinner=findViewById(R.id.search_type);
@@ -77,7 +79,6 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         mSerachBtn = findViewById(R.id.search_btn);
         mDateBtn=findViewById(R.id.search_date);
         mRecyclerView = findViewById(R.id.result_list);
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         progressBar = (ProgressBar)findViewById(R.id.search_progressBar) ;
         noDataTextView = findViewById(R.id.search_no_data_textview);
 
@@ -86,34 +87,40 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
                 1);
 
 
+        //   class spininner
+
         ArrayAdapter SearchTypeAdapter=ArrayAdapter.createFromResource(this,R.array.search_type,android.R.layout.simple_spinner_dropdown_item);
         mSearchTypeSpinner.setAdapter(SearchTypeAdapter);
         mSearchTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSearchTypeText=parent.getItemAtPosition(position).toString();
+                SearchTypeText=parent.getItemAtPosition(position).toString();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        mSearchTypeText="student";
+        SearchTypeText="student";
+
+
+         //  subject spininner
 
         ArrayAdapter standeredAdapter=ArrayAdapter.createFromResource(this,R.array.class_name,android.R.layout.simple_spinner_dropdown_item);
         mStanderdSpinner.setAdapter(standeredAdapter);
         mStanderdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedStanderdText=parent.getItemAtPosition(position).toString();
+                SelectedStanderdText=parent.getItemAtPosition(position).toString();
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mSelectedStanderdText=parent.getItemAtPosition(0).toString();
+                SelectedStanderdText=parent.getItemAtPosition(0).toString();
             }
         });
-        mSelectedStanderdText="11th";
+        SelectedStanderdText="11th";
 
 
        mSearchField.addTextChangedListener(new TextWatcher(){
@@ -123,8 +130,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 progressBar.setVisibility(View.VISIBLE);
-                if(mSearchTypeText.equals("student")) firebaseStudentSearch(s.toString());
-                else if(mSearchTypeText.equals("date")) firebaseTestSearch(s.toString());
+                if(SearchTypeText.equals("student")) firebaseStudentSearch(s.toString());
+                else if(SearchTypeText.equals("date")) firebaseTestSearch(s.toString());
             }
 
             @Override
@@ -147,21 +154,56 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
                 Toast.makeText(getApplicationContext(),"search"+mSearchField.getText().toString(),Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.VISIBLE);
 
-                if(mSearchTypeText.equals("student")) firebaseStudentSearch(mSearchField.getText().toString());
-                else if(mSearchTypeText.equals("date")) firebaseTestSearch(mSearchField.getText().toString());
+                if(SearchTypeText.equals("student")) firebaseStudentSearch(mSearchField.getText().toString());
+                else if(SearchTypeText.equals("date")) firebaseTestSearch(mSearchField.getText().toString());
             }});
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+        getDurationQuery();
+
+
     }
+
+
+    /*
+    *
+    * getting running acadymic year for 11th or 12th
+    *
+     */
+
+    private void getDurationQuery() {
+
+        databaseRef.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
+
+                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
+
+                    if (snap.getKey().contains("11th")) {
+                        String parts1[] = snap.getKey().split("11th");
+                        durationText = parts1[1];
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}});
+    }
+
+
+
 
     private void firebaseStudentSearch(final String searchText) {
 
         Query query=null;
 
-            if(searchText.isEmpty())    query=mDatabaseRef.child(mSelectedStanderdText+"("+durationText+")").child("profile").orderByChild("name");
-            else                        query=mDatabaseRef.child(mSelectedStanderdText+"("+durationText+")").child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
+            if(searchText.isEmpty())    query=databaseRef.child(SelectedStanderdText+durationText).child("profile").orderByChild("name");
+            else                        query=databaseRef.child(SelectedStanderdText+durationText).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
 
          FirebaseRecyclerAdapter<ProfileDetails,SearchByStudent_Search> studentAdapter=new FirebaseRecyclerAdapter <ProfileDetails, SearchByStudent_Search>(
                 ProfileDetails.class,
@@ -181,7 +223,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             }
             @Override
             protected void populateViewHolder(SearchByStudent_Search viewHolder, final ProfileDetails model, int position) {
-                viewHolder.setDetails(model,getApplicationContext(),mSelectedStanderdText);
+                viewHolder.setDetails(model,getApplicationContext(),SelectedStanderdText);
             }};
 
         mRecyclerView.setAdapter(studentAdapter);
@@ -189,13 +231,15 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     }
 
+    
+
 
     private void firebaseTestSearch(final String searchText) {
 
         Query query=null;
 
-        if(searchText.isEmpty())    query=mDatabaseRef.child(mSelectedStanderdText+"("+durationText+")").child("search").orderByKey();
-        else                        query=mDatabaseRef.child(mSelectedStanderdText+"("+durationText+")").child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
+        if(searchText.isEmpty())    query=databaseRef.child(SelectedStanderdText+durationText).child("search").orderByKey();
+        else                        query=databaseRef.child(SelectedStanderdText+durationText).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
 
         testAdapter=new FirebaseRecyclerAdapter <SearchByDateDetails,SearchByDate_Search>(
                 SearchByDateDetails.class,
@@ -216,7 +260,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             protected void populateViewHolder(SearchByDate_Search viewHolder, final SearchByDateDetails model, int position) {
                 final String key=testAdapter.getRef(position).getKey();
-                viewHolder.setDetails(model,getApplicationContext(),key,searchText,mSelectedStanderdText);
+                viewHolder.setDetails(model,getApplicationContext(),key,searchText,SelectedStanderdText);
             }};
 
 
@@ -244,4 +288,4 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
 
 
-    }
+}
