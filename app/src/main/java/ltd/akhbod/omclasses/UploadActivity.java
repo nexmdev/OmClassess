@@ -90,6 +90,9 @@ public class UploadActivity extends AppCompatActivity {
 
 
         ref= FirebaseDatabase.getInstance().getReference();
+        currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
+        int nextYear=currentYear+1;
+        selectedDuration=currentYear+"-"+nextYear;
 
         mImage=findViewById(R.id.upload_image);
         mNameEditText=findViewById(R.id.upload_name);
@@ -248,8 +251,8 @@ public class UploadActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
 
-                final String newNodeKey12="12th"+"("+currentYear+"-"+(currentYear+1)+")";
-                final String newNodeKey11="11th"+"("+currentYear+"-"+(currentYear+1)+")";
+                final String newNodeKey12="12th"+"("+mDurationText.getText().toString()+")";
+                final String newNodeKey11="11th"+"("+mDurationText.getText().toString()+")";
 
 
                 ref.child(keyToMigrate).addListenerForSingleValueEvent(new ValueEventListener() {
