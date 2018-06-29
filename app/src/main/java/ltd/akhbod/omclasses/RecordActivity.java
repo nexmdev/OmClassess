@@ -228,8 +228,8 @@ public class RecordActivity extends AppCompatActivity {
 
                 finalMessage = sms1.getText().toString();
                 ((Button)v).setText("Selected !");
-                ((Button)v).setBackgroundResource(R.color.grey);
-                ((Button)v).setEnabled(false);
+                v.setBackgroundResource(R.color.grey);
+                v.setEnabled(false);
 
             }
         });
@@ -242,8 +242,8 @@ public class RecordActivity extends AppCompatActivity {
 
                 finalMessage = sms2.getText().toString();
                 ((Button)v).setText("Selected !");
-                ((Button)v).setBackgroundResource(R.color.grey);
-                ((Button)v).setEnabled(false);
+                v.setBackgroundResource(R.color.grey);
+                v.setEnabled(false);
             }
         });
         bfinal.setOnClickListener(new View.OnClickListener() {
