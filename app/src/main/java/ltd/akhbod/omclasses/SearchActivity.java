@@ -231,7 +231,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     }
 
-    
+
 
 
     private void firebaseTestSearch(final String searchText) {
