@@ -32,7 +32,7 @@ public class RecordTestActivity extends AppCompatActivity {
 
 
     //Activity variables
-    String key=null,mSelectedStanderd;
+    String key=null,totalPresent,mSelectedStanderd,durationText;
     ArrayList<String> marksArray=new ArrayList<>();
     String[] nosToUpload=null;
     ArrayList<String> studentIdArray=new ArrayList<>();
@@ -52,8 +52,9 @@ public class RecordTestActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mSelectedStanderd = intent.getStringExtra("class");
         key = intent.getStringExtra("key");
+        totalPresent=intent.getStringExtra("totalPresent");
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd + "(2018-2019)").child("record");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         getSupportActionBar().setTitle(mSelectedStanderd + " / " + key);
 
 
@@ -69,10 +70,114 @@ public class RecordTestActivity extends AppCompatActivity {
             }
         });
 
-        seperateId_Name(intent.getStringExtra("totalPresent"));
+        getDurationQuery();
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+
+
+    /*
+    *
+    * getting running acadymic year for 11th or 12th  and calling seperateId_Name()
+    *
+    */
+
+
+    private void getDurationQuery() {
+
+        databaseReference.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
+
+                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
+
+                    if (snap.getKey().contains("11th")) {
+                        String parts1[] = snap.getKey().split("11th");
+                        durationText = parts1[1];
+                        seperateId_Name();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}});
+    }
+
+
+
+
+    /*
+    * totalPresent:
+    * "Abhijit Mahesh Bodulwar=-LEPPz23Z4HtIFNIzde7,Shubham Suresh Pawar=-LEPQ5C4KEa24I8HGeB1,Akshay Bhoyar=-LEPyx4bWc92bhieIwMD"
+    *
+    */
+
+    private void seperateId_Name() {
+
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        String[] id_name=new String[totalPresent.length()];
+
+        if(totalPresent.length()== 1){ id_name[0]=totalPresent; }
+        else
+        id_name=totalPresent.split(",");
+
+
+        int count=0;
+        while ( count < id_name.length )
+        {
+
+            String[] temp=id_name[count].split("=");
+            studentNamesArray.add(count,temp[0]);
+            studentIdArray.add(count,temp[1]);
+
+            final int finalCount = count;
+            final String[] finalId_name = id_name;
+
+
+            databaseReference.child(mSelectedStanderd+durationText).child("record")
+                             .child(studentIdArray.get(count)+"/"+key+"/"+"marks").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    String marks = dataSnapshot.getValue().toString();
+                    if (!marks.equals("00"))
+                        marksArray.add(finalCount, marks);
+                    else
+                        marksArray.add(finalCount, "");
+
+                    if (marksArray.size() == finalId_name.length){
+                        mProgressBar.setVisibility(View.GONE);
+                        setAdapter();                                      //after splitiing totalPresent the setAdapter() will get called
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}});
+
+            count++;
+        }
+
+
+    }
+
+
+
+    /*
+    *
+    *   uploading only marks which are inserted in editText
+    *
+    */
 
     private void uploadMarks() {
 
@@ -84,19 +189,28 @@ public class RecordTestActivity extends AppCompatActivity {
         {
 
             if(nosToUpload[count].equals("yes")){
+
                 final int finalCount = count;
-                databaseReference.child(studentIdArray.get(count) + "/" + key + "/" + "marks").setValue(marksArray.get(count)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                databaseReference.child(mSelectedStanderd+durationText).child("record")
+                                 .child(studentIdArray.get(count) + "/" + key + "/" + "marks")
+                                 .setValue(marksArray.get(count))
+
+
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(getApplicationContext(), "uploaded " + finalCount + " succesfull", Toast.LENGTH_SHORT).show();
                     }
-                }).addOnFailureListener(new OnFailureListener() {
+                        })
+
+
+                        .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getApplicationContext(), "uploaded " + finalCount + " failed", Toast.LENGTH_SHORT).show();
                         Log.d("data", e.getMessage());
                     }
-                });
+                        });
             }
 
             count++;
@@ -106,61 +220,12 @@ public class RecordTestActivity extends AppCompatActivity {
     }
 
 
-    //"Abhijit Mahesh Bodulwar=-LEPPz23Z4HtIFNIzde7,Shubham Suresh Pawar=-LEPQ5C4KEa24I8HGeB1,Akshay Bhoyar=-LEPyx4bWc92bhieIwMD"
-    private void seperateId_Name(String totalPresent) {
-
-        mProgressBar.setVisibility(View.VISIBLE);
-
-        String[] id_name=new String[totalPresent.length()];
-
-        if(totalPresent.length()== 1){ id_name[0]=totalPresent; }
-        else
-        id_name=totalPresent.split(",");
-
-        int count=0;
-        while ( count < id_name.length )
-        {
-
-            String[] temp=new String[3];
-            temp=id_name[count].split("=");
-            studentNamesArray.add(count,temp[0]);
-            studentIdArray.add(count,temp[1]);
-
-            final int finalCount = count;
-            final String[] finalId_name = id_name;
-
-
-            databaseReference.child(studentIdArray.get(count)+"/"+key+"/"+"marks").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    String marks=dataSnapshot.getValue().toString();
-                    if(!marks.equals("00"))
-                    {
-                        marksArray.add(finalCount,marks);
-                    }
-                    else
-                    {
-                        marksArray.add(finalCount,"");
-                    }
-                    if(marksArray.size()== finalId_name.length){     mProgressBar.setVisibility(View.GONE);setAdapter();   }
-                }
-
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {}
-
-                });
-
-            count++;
-        }
-
-    }
-
-
     private void setAdapter() {
         adapter=new RecordTest(getApplicationContext(),marksArray,studentIdArray,studentNamesArray,key,studentNamesArray.size());
         mListView.setAdapter(adapter);
     }
+
+
+
 
 }
