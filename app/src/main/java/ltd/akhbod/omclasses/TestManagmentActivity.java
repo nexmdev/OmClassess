@@ -2,7 +2,11 @@ package ltd.akhbod.omclasses;
 
 import android.*;
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -27,8 +31,12 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -66,7 +74,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     ArrayList<String> studentIdArray=new ArrayList<>();
     ArrayList<String> studentNamesArray=new ArrayList<>();
     ClickatellHttp httpApi;
-    String MESSAGE_ID=null;
+    String MESSAGE_ID=null,durationText;
+    int currentYear;
 
     //firebase variables
     DatabaseReference ref;
@@ -85,9 +94,10 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         // Initialize the clickatell object:
         ref= FirebaseDatabase.getInstance().getReference();
+        getDurationQuery();
         httpApi = new ClickatellHttp("Abhijit_click", "U3zUw3cKSeaViiv_c5C1OA== ", "Abhijit@click");
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-
+        currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
 
 
         mDateText=findViewById(R.id.TestManagment_dateText);
@@ -155,78 +165,106 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
              uploadDetails();
             }});
 
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         setFirebaseAdapter();
     }
 
-    private void setFirebaseAdapter() {
+    private void getDurationQuery() {
 
+        ref.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
+
+                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
+
+                    if (snap.getKey().contains("11th")) {
+                        String parts1[] = snap.getKey().split("11th");
+                        durationText = parts1[1];
+                        setFirebaseAdapter();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}});
+    }
+
+
+
+    private void setFirebaseAdapter() {
 
         studentIdArray.clear();
         studentNamesArray.clear();
         presentArray.clear();
 
+        Log.d("abhi","setFirebaseAdapter()");
+
+        Query query=ref.child(mSelectedClass+durationText).child("profile").orderByChild("name");
 
         FirebaseRecyclerAdapter<ProfileDetails,PresentyList_testManagemnet> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<ProfileDetails, PresentyList_testManagemnet>(
 
-               ProfileDetails.class,
-               R.layout.management_singleitem_layout,
+                ProfileDetails.class,
+                R.layout.management_singleitem_layout,
                 PresentyList_testManagemnet.class,
-               ref.child(mSelectedClass+"(2018-2019)").child("profile")
+                query
 
-       ) {
-           @Override
-           protected void populateViewHolder(final PresentyList_testManagemnet viewHolder, final ProfileDetails model, final int position) {
+        ) {
+            @Override
+            protected void populateViewHolder(final PresentyList_testManagemnet viewHolder, final ProfileDetails model, final int position) {
 
-               Log.d("abhi",""+position);
+                Log.d("abhi",""+position);
 
-           viewHolder.setDetails(getApplicationContext(),model,position);
+                viewHolder.setDetails(getApplicationContext(),model,position);
 
-           viewHolder.mSendMessage.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                  // viewHolder.progressBar.setVisibility(View.VISIBLE);
-                   viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
-                   viewHolder.mSendMessage.setEnabled(false);
-                   viewHolder.mSendMessage.setImageResource(R.drawable.ic_done_black_24dp);
-                   sendMessage(model.getMobNo(),model.getName());
-                   // sendSingleMessage("+917775971543","Hii this is Om Class.");
-                   //GetCoverage("+918668737792");
-               }});
-               studentIdArray.add(position,model.getId());
-               studentNamesArray.add(position,model.getName());
-               presentArray.add(position,"yes");
+                viewHolder.mSendMessage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // viewHolder.progressBar.setVisibility(View.VISIBLE);
+                        viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+                        viewHolder.mSendMessage.setEnabled(false);
+                        viewHolder.mSendMessage.setImageResource(R.drawable.ic_done_black_24dp);
+                        sendMessage(model.getMobNo(),model.getName());
+                        // sendSingleMessage("+917775971543","Hii this is Om Class.");
+                        //GetCoverage("+918668737792");
+                    }});
+                studentIdArray.add(position,model.getId());
+                studentNamesArray.add(position,model.getName());
+                presentArray.add(position,"yes");
 
-               viewHolder.mPresenetLayout.setOnClickListener(new View.OnClickListener() {
-                   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                   @Override
-                   public void onClick(View v) {
-                       viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
-                       viewHolder.mAbsentLayout.setBackground(null);
-                       presentArray.set(position,"yes");
-                       viewHolder.mSendMessage.setEnabled(false);
+                viewHolder.mPresenetLayout.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onClick(View v) {
+                        viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
+                        viewHolder.mAbsentLayout.setBackground(null);
+                        presentArray.set(position,"yes");
+                        viewHolder.mSendMessage.setEnabled(false);
 
-                   }});
+                    }});
 
-               viewHolder.mAbsentLayout.setOnClickListener(new View.OnClickListener() {
-                   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                   @Override
-                   public void onClick(View v) {
-                       viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
-                       viewHolder.mPresenetLayout.setBackground(null);
-                       presentArray.set(position,"no");
-                       viewHolder.mSendMessage.setEnabled(true);
-                   }});
+                viewHolder.mAbsentLayout.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onClick(View v) {
+                        viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
+                        viewHolder.mPresenetLayout.setBackground(null);
+                        presentArray.set(position,"no");
+                        viewHolder.mSendMessage.setEnabled(true);
+                    }});
 
 
-           }};
+            }};
         recyclerView.setAdapter(firebaseRecyclerAdapter);
     }
+
 
     private void sendMessage(String mobNo, String name) {
 
@@ -260,7 +298,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         ///uploading combined string
 
         SearchByDateDetails obj2=new SearchByDateDetails(totalPresent.toString());
-        ref.child(mSelectedClass+"(2018-2019)").child("search").child(currentDate+"-"+mSelectedSubject).setValue(obj2).addOnSuccessListener(new OnSuccessListener<Void>() {
+        ref.child(mSelectedClass+durationText).child("search").child(currentDate+"-"+mSelectedSubject).setValue(obj2).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(getApplicationContext(), "" + "data uploaded successfully", Toast.LENGTH_SHORT).show();
@@ -280,7 +318,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                while (count < presentArray.size()){
 
                     RecordDetails obj = new RecordDetails(mSelectedSubject,presentArray.get(count), "00");
-                    ref.child(mSelectedClass+"(2018-2019)").child("record").child(studentIdArray.get(count)).child(currentDate+"-"+mSelectedSubject).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    ref.child(mSelectedClass+durationText).child("record").child(studentIdArray.get(count)).child(currentDate+"-"+mSelectedSubject).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 

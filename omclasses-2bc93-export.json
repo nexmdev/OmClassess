@@ -1,186 +1,46 @@
 {
-  "11th(2018-2019)" : {
+  "11th(2017-2018)" : {
     "profile" : {
-      "-LEzB_cNVasG4lO9RmPI" : {
-        "address" : "vasant nagar",
-        "id" : "-LEzB_cNVasG4lO9RmPI",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9884848474",
-        "name" : "Varad Khan",
+      "-LFzbkgzrvt8ZErukeuR" : {
+        "address" : "istari nagar",
+        "id" : "-LFzbkgzrvt8ZErukeuR",
+        "imageUrl" : "X",
+        "mobNo" : "2993939393",
+        "name" : "11th(2017-2018)",
         "school" : "spm"
       }
     },
     "record" : {
-      "-LEynRq55YxY7Ak8FMLh" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
+      "-LFzbkgzrvt8ZErukeuR" : {
+        "29-06-2018-physics" : {
+          "marks" : "20",
           "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEynUaz7AwMx1-Zrt30" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEyn_Tcwky5OaFgL5g0" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEynbhoh7BfXDpnPpNL" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEyneg_-DPAi4PIFSd5" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEynieCdLgjmvdN0NcH" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEzB_cNVasG4lO9RmPI" : {
-        "14-06-2018-maths" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "maths"
-        },
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "no",
           "subject" : "physics"
         }
       }
     },
     "search" : {
-      "14-06-2018-maths" : {
-        "totalPresent" : "Varad Khan=-LEzB_cNVasG4lO9RmPI"
-      },
-      "14-06-2018-physics" : {
-        "totalPresent" : ""
+      "29-06-2018-physics" : {
+        "totalPresent" : "11th(2017-2018)=-LFzbkgzrvt8ZErukeuR"
       }
     }
   },
-  "12th(2018-2019)" : {
+  "12th(2017-2018)" : {
     "profile" : {
-      "-LEynRq55YxY7Ak8FMLh" : {
-        "address" : "Istari nagar",
-        "id" : "-LEynRq55YxY7Ak8FMLh",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9393939387",
-        "name" : "Abhijit Bodulwar",
-        "school" : "spm"
-      },
-      "-LEynUaz7AwMx1-Zrt30" : {
-        "address" : "Istari nagar",
-        "id" : "-LEynUaz7AwMx1-Zrt30",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9393939387",
-        "name" : "Shubham Pawar",
-        "school" : "spm"
-      },
-      "-LEyn_Tcwky5OaFgL5g0" : {
-        "address" : "Istari nagar",
-        "id" : "-LEyn_Tcwky5OaFgL5g0",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9393939387",
-        "name" : "Paresh Shahare",
-        "school" : "spm"
-      },
-      "-LEynbhoh7BfXDpnPpNL" : {
-        "address" : "Istari nagar",
-        "id" : "-LEynbhoh7BfXDpnPpNL",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9393939387",
-        "name" : "Akshay Mirashe",
-        "school" : "spm"
-      },
-      "-LEyneg_-DPAi4PIFSd5" : {
-        "address" : "Istari nagar",
-        "id" : "-LEyneg_-DPAi4PIFSd5",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9393939387",
-        "name" : "Abhay Mokashe",
-        "school" : "spm"
-      },
-      "-LEynieCdLgjmvdN0NcH" : {
-        "address" : "Istari nagar",
-        "id" : "-LEynieCdLgjmvdN0NcH",
-        "imageUrl" : "2n38u1e",
-        "mobNo" : "9393939387",
-        "name" : "Abhishek Shrimanwar",
+      "-LFzbkgzrvt8ZErukeuR" : {
+        "address" : "istari nagar",
+        "id" : "-LFzbkgzrvt8ZErukeuR",
+        "imageUrl" : "X",
+        "mobNo" : "2993939393",
+        "name" : "12th(2017-2018)",
         "school" : "spm"
       }
-    },
-    "record" : {
-      "-LEynRq55YxY7Ak8FMLh" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEynUaz7AwMx1-Zrt30" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEyn_Tcwky5OaFgL5g0" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEynbhoh7BfXDpnPpNL" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEyneg_-DPAi4PIFSd5" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEynieCdLgjmvdN0NcH" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      },
-      "-LEzB_cNVasG4lO9RmPI" : {
-        "14-06-2018-physics" : {
-          "marks" : "00",
-          "presenty" : "yes",
-          "subject" : "physics"
-        }
-      }
-    },
-    "search" : {
-      "14-06-2018-physics" : {
-        "totalPresent" : "Varad Khan=-LEzB_cNVasG4lO9RmPI"
-      }
+    }
+  },
+  "DataManage" : {
+    "isMigrated_Deleted" : {
+      "11th(2017-2018)" : "no",
+      "12th(2017-2018)" : "no"
     }
   }
 }
