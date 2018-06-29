@@ -2,6 +2,9 @@ package ltd.akhbod.omclasses;
 
 import android.*;
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,8 +30,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -64,12 +70,13 @@ public class UploadActivity extends AppCompatActivity {
     private String selectedStanderd,selectedDuration;
 
     //layout variables
-    private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText;
+    private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText,mDurationText;
     private ImageView mImage;
-    private TextView mOriginalImageText,mProcessesImageText,mDurationText;
+    private TextView mOriginalImageText,mProcessesImageText;
     private Button mUploadBtn;
     private Spinner mStanderedSpinner;
     private String pushId,studentPhotoUrl = "X";
+    int currentYear;
 
     //firebase variables
     private DatabaseReference ref;
@@ -82,9 +89,6 @@ public class UploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload);
 
 
-        int year= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
-        int nextYear=year+1;
-        selectedDuration=year+"-"+nextYear;
         ref= FirebaseDatabase.getInstance().getReference();
 
         mImage=findViewById(R.id.upload_image);
@@ -153,22 +157,23 @@ public class UploadActivity extends AppCompatActivity {
                 }
 
                 ProfileDetails obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId);
-                uploadData(obj,pushId);
 
-
+                checkMigrationDeletion(obj,pushId);
             }});
-
-
 
     }
 
 
-
+    /*
+    *
+    *   uploading profile data
+    *
+    */
 
     private void uploadData(ProfileDetails obj, String pushId) {
 
 
-        ref.child(selectedStanderd+"("+selectedDuration+")").child("profile").child(pushId).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+        ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(getApplicationContext(),"uploaded successfully!!!",Toast.LENGTH_SHORT).show();
@@ -181,6 +186,125 @@ public class UploadActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    /*
+    *   check is migrating and deleting classes are present or not,
+    *   if yes migrate 11th and delete 12th prevoius batches
+    *
+    */
+
+    private void checkMigrationDeletion(final ProfileDetails obj, final String pushId) {
+
+          String[] parts=mDurationText.getText().toString().split("-");
+          final String keyToCheck="("+(Integer.parseInt(parts[0])-1)+"-"+(Integer.parseInt(parts[0]))+")";
+
+
+          ref.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                int temp=0;
+                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
+
+                    String[] parts=snap.getKey().split("th");
+
+                    if(keyToCheck.contains(parts[1])) {
+
+                        if (parts[0].contains("11")) {
+                            migrateAndDeleteDialog(snap.getKey());}
+                    }
+
+                    else if(temp==0){                       //will true only when there is no migrate or detected at temp=0
+                           uploadData(obj, pushId);}        //trigeering uploadData() at temp>0 will have anologous behaviour
+
+                    temp++;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}});
+    }
+
+
+
+    /*
+    *   Alert Dialog for:
+    *   1.Deleting previous 11th batch node and creating new 12th batch node of next year having same profile node.
+    *   2.Deleting previous 12th batch node and making sepeate only profile node in garbage node.
+    *
+   */
+
+    private void migrateAndDeleteDialog(final String keyToMigrate) {
+
+        final String keyToDelete=keyToMigrate.replace("11","12");
+
+        AlertDialog.Builder builder=new AlertDialog.Builder(UploadActivity.this);
+        builder.setTitle("Migration & Deletion");
+        builder.setMessage("1. "+keyToMigrate+" will migrate to next year\n2. "+keyToDelete+" will be delete \n"+
+                            "(  Note:students profile data will be added to recycle node)");
+        builder.setPositiveButton("Next", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                final String newNodeKey12="12th"+"("+currentYear+"-"+(currentYear+1)+")";
+                final String newNodeKey11="11th"+"("+currentYear+"-"+(currentYear+1)+")";
+
+
+                ref.child(keyToMigrate).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {                              ////Migrating
+
+                        ref.child(newNodeKey12).setValue(dataSnapshot.getValue());
+
+                        dataSnapshot.getRef().setValue(null);
+
+                        ref.child("DataManage/isMigrated_Deleted").child(keyToMigrate).setValue(null);
+                        ref.child("DataManage/isMigrated_Deleted").child(newNodeKey12).setValue("no");
+                        ref.child("DataManage/isMigrated_Deleted").child(newNodeKey11).setValue("no");
+
+                        ref.child(keyToDelete).addListenerForSingleValueEvent(new ValueEventListener() {    ////Deleting
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                                {
+                                    if(snapshot.getKey().equals("profile"))
+                                    {
+                                        ref.child("DataManage/recyclebin").child(keyToDelete).child("profile")  //creating node in garbage
+                                                .setValue(snapshot.getValue());
+
+                                    }
+
+                                    snapshot.getRef().setValue(null);
+                                }
+
+                                ref.child("DataManage/isMigrated_Deleted").child(keyToDelete).setValue(null);  //deleting othe rnodes
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}});
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}});
+
+            }});
+
+        builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}});
+
+        Dialog dialog=builder.create();
+        dialog.show();
+
+
+    }
+
+
+
 
 
     public void customCompressImage() {
@@ -226,7 +350,7 @@ public class UploadActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         Uri file = Uri.fromFile(compressedImage);
         StorageReference storageRef = storage.getReference();
-        StorageReference studentPhotoRef = storageRef.child(selectedStanderd+"("+selectedDuration+")/"+pushId);
+        StorageReference studentPhotoRef = storageRef.child(selectedStanderd+"("+mDurationText.getText()+")/"+pushId);
         UploadTask uploadTask = studentPhotoRef.putFile(file);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
