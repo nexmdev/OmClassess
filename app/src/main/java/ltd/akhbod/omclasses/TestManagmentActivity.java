@@ -209,6 +209,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         Query query=ref.child(mSelectedClass+durationText).child("profile").orderByChild("name");
 
+
         FirebaseRecyclerAdapter<ProfileDetails,PresentyList_testManagemnet> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<ProfileDetails, PresentyList_testManagemnet>(
 
                 ProfileDetails.class,
