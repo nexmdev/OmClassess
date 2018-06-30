@@ -2,6 +2,7 @@ package ltd.akhbod.omclasses;
 
 import android.*;
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -69,6 +70,7 @@ public class UploadActivity extends AppCompatActivity {
     private File compressedImage;
     private String selectedStanderd,selectedDuration;
 
+
     //layout variables
     private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText,mDurationText;
     private ImageView mImage;
@@ -79,7 +81,7 @@ public class UploadActivity extends AppCompatActivity {
     int currentYear;
 
     //firebase variables
-    private DatabaseReference ref;
+    private DatabaseReference ref,garbageRef;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -90,6 +92,8 @@ public class UploadActivity extends AppCompatActivity {
 
 
         ref= FirebaseDatabase.getInstance().getReference();
+        garbageRef=FirebaseDatabase.getInstance().getReference().child("DataManage").child("isMigrated_Deleted");
+        garbageRef.keepSynced(false);
         currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
         int nextYear=currentYear+1;
         selectedDuration=currentYear+"-"+nextYear;
@@ -173,26 +177,90 @@ public class UploadActivity extends AppCompatActivity {
     *
     */
 
-    private void uploadData(ProfileDetails obj, String pushId) {
+    private void uploadData(final ProfileDetails obj, final String pushId) {
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+
+                if (connected) {                                                                    //when online
 
 
-        ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplicationContext(),"uploaded successfully!!!",Toast.LENGTH_SHORT).show();
+                    ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj)
+
+
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
+                            cleanUpPage();
+                        }})
+
+
+                            .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
+                            Log.d("guddi","error="+e.getMessage());
+
+                        }});
+                }
+
+                else                                                                                //when offline
+                    {
+
+                    Toast.makeText(getApplicationContext(),"offline uploaded successfully",Toast.LENGTH_SHORT).show();
+
+                    ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj)
+
+
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {}})                      //sucess and failure body never excute
+
+
+                            .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {}});
+
+                        cleanUpPage();
+
+                }
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
-                Log.d("guddi","error="+e.getMessage());
-            }
-        });
+            public void onCancelled(DatabaseError error) {
+                System.err.println("Listener was cancelled");
+            }});
+
+
+
+
+
     }
 
 
     /*
-    *   check is migrating and deleting classes are present or not,
+    *   reset all infomation on pages to blank
+    *
+    */
+
+    private void cleanUpPage() {
+
+        mNameEditText.setText("");
+        mAddressEditText.setText("");
+        mMobNoEditText.setText("");
+        studentPhotoUrl="";
+
+    }
+
+
+
+
+    /*
+    *   check if migrating and deleting classes are present or not,
     *   if yes migrate 11th and delete 12th prevoius batches
     *
     */
@@ -200,22 +268,25 @@ public class UploadActivity extends AppCompatActivity {
     private void checkMigrationDeletion(final ProfileDetails obj, final String pushId) {
 
           String[] parts=mDurationText.getText().toString().split("-");
-          final String keyToCheck="("+(Integer.parseInt(parts[0])-1)+"-"+(Integer.parseInt(parts[0]))+")";
+          final String keyToCheck="("+(Integer.parseInt(parts[0])-1)+"-"+(Integer.parseInt(parts[0]))+")".replace(" ","");
 
 
-          ref.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+
+          garbageRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 int temp=0;
                 for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
+                    Log.d("snap",snap.getKey());
                     String[] parts=snap.getKey().split("th");
 
-                    if(keyToCheck.contains(parts[1])) {
+                    if(keyToCheck.equals(parts[1])) {
 
-                        if (parts[0].contains("11")) {
+                        if (parts[0].equals("11") || parts[0].equals("12")) {
                             migrateAndDeleteDialog(snap.getKey());}
+                            break;
                     }
 
                     else if(temp==0){                       //will true only when there is no migrate or detected at temp=0
@@ -266,6 +337,8 @@ public class UploadActivity extends AppCompatActivity {
                         ref.child("DataManage/isMigrated_Deleted").child(keyToMigrate).setValue(null);
                         ref.child("DataManage/isMigrated_Deleted").child(newNodeKey12).setValue("no");
                         ref.child("DataManage/isMigrated_Deleted").child(newNodeKey11).setValue("no");
+                        Toast.makeText(getApplicationContext(),"Migrating "+keyToMigrate+" to "+newNodeKey11
+                                +" successfull",Toast.LENGTH_SHORT).show();
 
                         ref.child(keyToDelete).addListenerForSingleValueEvent(new ValueEventListener() {    ////Deleting
                             @Override
@@ -283,6 +356,7 @@ public class UploadActivity extends AppCompatActivity {
                                 }
 
                                 ref.child("DataManage/isMigrated_Deleted").child(keyToDelete).setValue(null);  //deleting othe rnodes
+                                Toast.makeText(getApplicationContext(),"Deleting "+keyToDelete+" to successfull",Toast.LENGTH_SHORT).show();
 
                             }
 
