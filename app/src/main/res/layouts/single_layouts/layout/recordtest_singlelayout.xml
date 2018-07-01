@@ -27,7 +27,7 @@
         android:id="@+id/recordtest_single_editMarksEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:hint="Upload marks"
@@ -36,5 +36,26 @@
         android:textColor="@android:color/black"
         android:textColorHint="@color/grey"
         android:textSize="14sp" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7">
+
+        <ImageButton
+            android:id="@+id/recordtest_single_massageBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_message_black_24dp"
+            android:clickable="true" />
+
+        <ProgressBar
+            android:id="@+id/recordtest_single_row_progressbar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+    </FrameLayout>
+
 
 </LinearLayout>
