@@ -224,13 +224,15 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                 Log.d("abhi",""+position);
 
                 viewHolder.setDetails(getApplicationContext(),model,position);
+                viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+                viewHolder.mSendMessage.setEnabled(false);
 
                 viewHolder.mSendMessage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // viewHolder.progressBar.setVisibility(View.VISIBLE);
-                        viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
                         viewHolder.mSendMessage.setEnabled(false);
+                        viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
                         viewHolder.mSendMessage.setImageResource(R.drawable.ic_done_black_24dp);
                         sendMessage(model.getMobNo(),model.getName());
                         // sendSingleMessage("+917775971543","Hii this is Om Class.");
@@ -247,6 +249,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                         viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
                         viewHolder.mAbsentLayout.setBackground(null);
                         presentArray.set(position,"yes");
+
+                        viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
                         viewHolder.mSendMessage.setEnabled(false);
 
                     }});
@@ -258,6 +262,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                         viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
                         viewHolder.mPresenetLayout.setBackground(null);
                         presentArray.set(position,"no");
+
+                        viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp);
                         viewHolder.mSendMessage.setEnabled(true);
                     }});
 
@@ -318,7 +324,9 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                 count=0;
                while (count < presentArray.size()){
 
-                    RecordDetails obj = new RecordDetails(mSelectedSubject,presentArray.get(count), "00");
+                   Log.d("upload",""+count);
+
+                    RecordDetails obj = new RecordDetails(mSelectedSubject,presentArray.get(count), "00",false);
                     ref.child(mSelectedClass+durationText).child("record").child(studentIdArray.get(count)).child(currentDate+"-"+mSelectedSubject).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
