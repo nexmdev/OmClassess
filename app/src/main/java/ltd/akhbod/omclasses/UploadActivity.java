@@ -93,7 +93,7 @@ public class UploadActivity extends AppCompatActivity {
 
         ref= FirebaseDatabase.getInstance().getReference();
         garbageRef=FirebaseDatabase.getInstance().getReference().child("DataManage").child("isMigrated_Deleted");
-        garbageRef.keepSynced(false);
+        garbageRef.keepSynced(true);
         currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
         int nextYear=currentYear+1;
         selectedDuration=currentYear+"-"+nextYear;
