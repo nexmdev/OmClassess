@@ -157,6 +157,7 @@ public class RecordTest extends BaseAdapter {
 
     }
 
+   
     public ArrayList<String> getMarks(){
         return marksArray;
     }

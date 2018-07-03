@@ -158,7 +158,7 @@ public class UploadActivity extends AppCompatActivity {
                 }else if(mSchoolText.isEmpty()){
                     mSchoolEditText.setError("Please enter school");
                     return;
-                }else if(mMobNoText.isEmpty() || mMobNoText.length()<10){
+                }else if(mMobNoText.isEmpty() || mMobNoText.length()<2){
                     mMobNoEditText.setError("Please enter valid mobile number");
                     return;
                 }
@@ -252,7 +252,7 @@ public class UploadActivity extends AppCompatActivity {
         mNameEditText.setText("");
         mAddressEditText.setText("");
         mMobNoEditText.setText("");
-        studentPhotoUrl="";
+        studentPhotoUrl="X";
 
     }
 

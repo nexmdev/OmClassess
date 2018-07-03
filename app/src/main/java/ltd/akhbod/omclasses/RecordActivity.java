@@ -38,7 +38,7 @@ public class RecordActivity extends AppCompatActivity {
     private ImageView studentPhoto;
 
     //Activity variables
-    private String sName,nSchool,nAddress,nMobNo,studentID,mSelectedStanderd,photoUrl;
+    private String sName,nSchool,nAddress,nMobNo,studentID,mSelectedStanderd,photoUrl,durationText;
 
 
     //firebase variables
@@ -59,8 +59,9 @@ public class RecordActivity extends AppCompatActivity {
         studentID=intent.getStringExtra("id");
         mSelectedStanderd=intent.getStringExtra("class");
         photoUrl = intent.getStringExtra("url");
+        durationText=intent.getStringExtra("duration");
 
-        ref=FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+"(2018-2019)").child("record");
+        ref=FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child("record");
 
         mName=findViewById(R.id.record_name);
         mSchool=findViewById(R.id.record_school);

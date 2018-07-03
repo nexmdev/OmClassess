@@ -223,7 +223,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             }
             @Override
             protected void populateViewHolder(SearchByStudent_Search viewHolder, final ProfileDetails model, int position) {
-                viewHolder.setDetails(model,getApplicationContext(),SelectedStanderdText);
+                viewHolder.setDetails(model,getApplicationContext(),SelectedStanderdText,durationText);
             }};
 
         mRecyclerView.setAdapter(studentAdapter);
