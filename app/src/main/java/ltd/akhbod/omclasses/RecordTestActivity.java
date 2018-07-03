@@ -20,8 +20,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import ltd.akhbod.omclasses.ModalClasses.RecordDetails;
+import ltd.akhbod.omclasses.ModalClasses.ProfileDetails;
 import java.util.ArrayList;
 import ltd.akhbod.omclasses.Adapter.RecordTest;
+
 
 public class RecordTestActivity extends AppCompatActivity {
 
@@ -37,10 +40,11 @@ public class RecordTestActivity extends AppCompatActivity {
     String[] nosToUpload=null;
     ArrayList<String> studentIdArray=new ArrayList<>();
     ArrayList<String> studentNamesArray=new ArrayList<>();
-
+    ArrayList<Boolean> smsSendArray=new ArrayList<>();
+    ArrayList<String> mobNoArray=new ArrayList<>();
 
     //Firebase variables
-    DatabaseReference databaseReference;
+    DatabaseReference ref;
     RecordTest adapter=null;
 
     @Override
@@ -51,10 +55,12 @@ public class RecordTestActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         mSelectedStanderd = intent.getStringExtra("class");
+        durationText=intent.getStringExtra("duration");
         key = intent.getStringExtra("key");
         totalPresent=intent.getStringExtra("totalPresent");
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
+        ref.keepSynced(true);
         getSupportActionBar().setTitle(mSelectedStanderd + " / " + key);
 
 
@@ -70,7 +76,7 @@ public class RecordTestActivity extends AppCompatActivity {
             }
         });
 
-        getDurationQuery();
+        seperateId_Name();
 
     }
 
@@ -79,40 +85,6 @@ public class RecordTestActivity extends AppCompatActivity {
         super.onStart();
 
     }
-
-
-
-    /*
-    *
-    * getting running acadymic year for 11th or 12th  and calling seperateId_Name()
-    *
-    */
-
-
-    private void getDurationQuery() {
-
-        databaseReference.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
-
-                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
-
-                    if (snap.getKey().contains("11th")) {
-                        String parts1[] = snap.getKey().split("11th");
-                        durationText = parts1[1];
-                        seperateId_Name();
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}});
-    }
-
-
 
 
     /*
@@ -143,27 +115,49 @@ public class RecordTestActivity extends AppCompatActivity {
             final int finalCount = count;
             final String[] finalId_name = id_name;
 
-
-            databaseReference.child(mSelectedStanderd+durationText).child("record")
-                             .child(studentIdArray.get(count)+"/"+key+"/"+"marks").addValueEventListener(new ValueEventListener() {
+            ref.child("record").child(studentIdArray.get(finalCount)+"/"+key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    String marks = dataSnapshot.getValue().toString();
-                    if (!marks.equals("00"))
-                        marksArray.add(finalCount, marks);
+                    RecordDetails obj=dataSnapshot.getValue(RecordDetails.class);
+
+                    if (!obj.getMarks().equals("00"))
+                        marksArray.add(finalCount, obj.getMarks());                                 //getting marks and isSmsSent for each present id
                     else
                         marksArray.add(finalCount, "");
 
-                    if (marksArray.size() == finalId_name.length){
-                        mProgressBar.setVisibility(View.GONE);
-                        setAdapter();                                      //after splitiing totalPresent the setAdapter() will get called
-                    }
+                     smsSendArray.add(finalCount,obj.getIsSmsSent());
+
+
+
+                    ref.child("profile").child(studentIdArray.get(finalCount)).child("mobNo")                     //getting mfor each present id
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    mobNoArray.add(finalCount, dataSnapshot.getValue().toString());
+
+
+                                    if (studentNamesArray.size() == finalId_name.length){
+                                        mProgressBar.setVisibility(View.GONE);
+                                        setAdapter();                                      //after splitiing totalPresent the setAdapter() will get called
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d("sms","profile:"+databaseError.getMessage());
+                                }
+                            });
 
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {}});
+                public void onCancelled(DatabaseError databaseError)
+                {  Log.d("sms","record"+databaseError.getMessage());}});
+
+
+
 
             count++;
         }
@@ -191,37 +185,34 @@ public class RecordTestActivity extends AppCompatActivity {
             if(nosToUpload[count].equals("yes")){
 
                 final int finalCount = count;
-                databaseReference.child(mSelectedStanderd+durationText).child("record")
-                                 .child(studentIdArray.get(count) + "/" + key + "/" + "marks")
+                ref.child("record").child(studentIdArray.get(count) + "/" + key + "/" + "marks")
                                  .setValue(marksArray.get(count))
 
 
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "uploaded " + finalCount + " succesfull", Toast.LENGTH_SHORT).show();
-                    }
-                        })
+                        Toast.makeText(getApplicationContext(), finalCount+" uploaded", Toast.LENGTH_SHORT).show();
+                    }})
 
 
                         .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "uploaded " + finalCount + " failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), finalCount+" uploading failed", Toast.LENGTH_SHORT).show();
                         Log.d("data", e.getMessage());
-                    }
-                        });
+                    }});
             }
 
             count++;
         }
 
-
     }
 
 
     private void setAdapter() {
-        adapter=new RecordTest(getApplicationContext(),marksArray,studentIdArray,studentNamesArray,key,studentNamesArray.size());
+        adapter=new RecordTest(getApplicationContext(),marksArray,studentIdArray,
+                studentNamesArray,key,studentNamesArray.size(),smsSendArray,mobNoArray,mSelectedStanderd,durationText);
         mListView.setAdapter(adapter);
     }
 
