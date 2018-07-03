@@ -278,7 +278,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         SmsManager manager = SmsManager.getDefault();
         String test = "आपला पाल्य "+name+" दि."+currentDate+" ला झालेल्या " +mSelectedSubject +" च्या टेस्ट ला अनुपस्थित होता. ओम क्लासेस";
         ArrayList<String> parts = manager.divideMessage(test);
-        manager.sendMultipartTextMessage("+918329575298",null,parts,null,null);
+        manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
     }
 
 

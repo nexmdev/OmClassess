@@ -4,11 +4,16 @@
         <item>physics</item>
         <item>chemistry</item>
         <item>maths</item>
+        <item>science</item>
     </string-array>
 
     <string-array name="class_name">
         <item>11th</item>
         <item>12th</item>
+        <item>10th</item>
+        <item>9th</item>
+        <item>8th</item>
+
     </string-array>
 
     <string-array name="search_type">
