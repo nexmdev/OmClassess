@@ -82,9 +82,13 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         progressBar = (ProgressBar)findViewById(R.id.search_progressBar) ;
         noDataTextView = findViewById(R.id.search_no_data_textview);
 
+        int currentDate= Integer.parseInt(new SimpleDateFormat("dd", Locale.getDefault()).format(new Date()));
+        int currentMonth= Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
+        currentMonth--;
+        int currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
         datePickerDialog = new DatePickerDialog(
-                SearchActivity.this,  SearchActivity.this, 2018,5,
-                1);
+                SearchActivity.this,  SearchActivity.this, currentYear,currentMonth,
+                currentDate);
 
 
         //   class spininner
@@ -275,14 +279,19 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
         month++;
-        String MONTH;
+        String MONTH,DAY;
         if(month<10){
             MONTH="0"+(month);
         }
         else
             MONTH=""+(month);
+        if(dayOfMonth<10){
+            DAY="0"+(dayOfMonth);
+        }else {
+            DAY = ""+dayOfMonth;
+        }
 
-        String date=dayOfMonth+"-"+MONTH+"-"+year;
+        String date=DAY+"-"+MONTH+"-"+year;
         mSearchField.setText(date);
     }
 

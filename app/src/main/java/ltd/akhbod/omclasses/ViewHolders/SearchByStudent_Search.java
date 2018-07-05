@@ -26,7 +26,10 @@ public class SearchByStudent_Search extends RecyclerView.ViewHolder {
         mName=mView.findViewById(R.id.search_singleLayout_name);
     }
 
-    public void setDetails(final ProfileDetails model, final Context applicationContext, final String selectedStanderdText, final String durationText) {
+
+    public void setDetails(final ProfileDetails model, final Context applicationContext, final String selectedStanderdText,
+    final String duration) {
+
 
 
         mName.setText(model.getName());
@@ -41,6 +44,7 @@ public class SearchByStudent_Search extends RecyclerView.ViewHolder {
                 intent.putExtra("address", model.getAddress());
                 intent.putExtra("mobile", model.getMobNo());
                 intent.putExtra("class",selectedStanderdText);
+                intent.putExtra("duration",duration);
                 intent.putExtra("url",model.getImageUrl());
                 intent.putExtra("duration",durationText);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

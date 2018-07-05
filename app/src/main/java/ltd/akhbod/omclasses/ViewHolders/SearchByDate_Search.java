@@ -32,7 +32,7 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
         super(itemView);
         mView = itemView;
         mName=mView.findViewById(R.id.search_singleLayout_name);
-        itemView.setOnClickListener(new View.OnClickListener() {
+       /* itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
@@ -43,7 +43,7 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
                     }
                 }
             }
-        });
+        });*/
     }
 
 

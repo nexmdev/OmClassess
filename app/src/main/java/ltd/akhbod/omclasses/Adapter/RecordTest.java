@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -106,7 +107,13 @@ public class RecordTest extends BaseAdapter {
                 mSend.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
                 mSend.setEnabled(false);
                 mSend.setImageResource(R.drawable.ic_done_black_24dp);
-                sendMessage(mobNoArray.get(position),studentNamesArray.get(position),position);
+                String marks = marksArray.get(position);
+                if (marks.isEmpty()){
+                    Toast.makeText(c,"Please fill marks first !",Toast.LENGTH_SHORT).show();
+                }else{
+                    sendMessage(marks,mobNoArray.get(position),studentNamesArray.get(position),position);
+                }
+
 
             }
         });
@@ -144,12 +151,13 @@ public class RecordTest extends BaseAdapter {
         return row;
     }
 
-    private void sendMessage(String mobNo, String name, int position) {
+    private void sendMessage(String marks,String mobNo, String name, int position) {
 
         SmsManager manager = SmsManager.getDefault();
-        String test = "आपला पाल्य "+name+" दि."+dateOfTest+" ला झालेल्या " +subjectOfTest +" च्या टेस्ट ला अनुपस्थित होता. ओम क्लासेस";
+
+        String test = "आपला पाल्य "+name+" ला दि."+dateOfTest+" ला झालेल्या " +subjectOfTest +" च्या टेस्टमध्ये "+marks+" मार्कस मिळाले. ओम क्लासेस";
         ArrayList<String> parts = manager.divideMessage(test);
-        manager.sendMultipartTextMessage("+918329575298",null,parts,null,null);
+        manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
 
         FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child("record")
                 .child(studentIdArray.get(position) + "/" + key + "/" + "isSmsSent")
