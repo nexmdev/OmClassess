@@ -46,7 +46,7 @@ public class SearchByStudent_Search extends RecyclerView.ViewHolder {
                 intent.putExtra("class",selectedStanderdText);
                 intent.putExtra("duration",duration);
                 intent.putExtra("url",model.getImageUrl());
-                intent.putExtra("duration",durationText);
+                intent.putExtra("duration",duration);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 applicationContext.startActivity(intent);
             }
