@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,7 +49,7 @@ public class RecordActivity extends AppCompatActivity {
 
     //Activity variables
     private String sName,nSchool,nAddress,nMobNo,studentID,
-            mSelectedStanderd,photoUrl,finalMessage;
+            mSelectedStanderd,photoUrl,finalMessage,durationText;
 
 
     //firebase variables
@@ -67,10 +68,11 @@ public class RecordActivity extends AppCompatActivity {
         nAddress=intent.getStringExtra("address");
         nMobNo=intent.getStringExtra("mobile");
         studentID=intent.getStringExtra("id");
+        durationText = intent.getStringExtra("duration");
         mSelectedStanderd=intent.getStringExtra("class");
         photoUrl = intent.getStringExtra("url");
 
-        ref=FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+"(2018-2019)").child("record");
+        ref=FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child("record");
 
         mName=findViewById(R.id.record_name);
         mSchool=findViewById(R.id.record_school);
@@ -194,7 +196,7 @@ public class RecordActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(StudentScorecard_record viewHolder, RecordDetails model, int position) {
                 String date = firebaseRecyclerAdapter.getRef(position).getKey();
-                viewHolder.setSingleRecord(date, model.getSubject(), model.getPresenty(), model.getMarks());
+                viewHolder.setSingleRecord(getApplicationContext(),date, model.getSubject(), model.getPresenty(), model.getMarks());
             }
         };
 
@@ -208,19 +210,22 @@ public class RecordActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.record_dialog_layout);
         dialog.setCanceledOnTouchOutside(true);
 
-        Button b1 = dialog.findViewById(R.id.record_dialog_sms_button_one);
-        Button b2 = dialog.findViewById(R.id.record_dialog_sms_button_two);
-        Button bfinal = dialog.findViewById(R.id.record_dialog_sms_button_send);
+        final Button b1 = dialog.findViewById(R.id.record_dialog_sms_button_one);
+        final Button b2 = dialog.findViewById(R.id.record_dialog_sms_button_two);
+        final Button b3 = dialog.findViewById(R.id.record_dialog_sms_button_three);
+        final Button bfinal = dialog.findViewById(R.id.record_dialog_sms_button_send);
 
         final EditText sms1 = dialog.findViewById(R.id.record_dialog_sms_edittext_one);
         final EditText sms2 = dialog.findViewById(R.id.record_dialog_sms_edittext_two);
+        final EditText sms3 = dialog.findViewById(R.id.record_dialog_sms_edittext_three);
 
         String message1 = "आपला पाल्य "+sName+" मागिल -- दिवसांपासुन टयूशन ला अनुपस्थित आहे. ओम क्लासेस";
         sms1.setText(message1);
         String message2 = "आपला पाल्य "+sName+" टयूशन च्या टेस्ट्स ला सतत अनुपस्थित आहे. ओम क्लासेस";
         sms2.setText(message2);
 
-
+        String message3 = "आपला पाल्य "+sName+" ची टयूशन फि दि.---- पर्यंत जमा करावी. ओम क्लासेस";
+        sms3.setText(message3);
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,8 +233,7 @@ public class RecordActivity extends AppCompatActivity {
 
                 finalMessage = sms1.getText().toString();
                 ((Button)v).setText("Selected !");
-                v.setBackgroundResource(R.color.grey);
-                v.setEnabled(false);
+                toggleButton(v,b2,b3);
 
             }
         });
@@ -242,8 +246,17 @@ public class RecordActivity extends AppCompatActivity {
 
                 finalMessage = sms2.getText().toString();
                 ((Button)v).setText("Selected !");
-                v.setBackgroundResource(R.color.grey);
-                v.setEnabled(false);
+                toggleButton(v,b1,b3);
+            }
+        });
+        b3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                finalMessage = sms3.getText().toString();
+                ((Button)v).setText("Selected !");
+                toggleButton(v,b2,b1);
             }
         });
         bfinal.setOnClickListener(new View.OnClickListener() {
@@ -275,8 +288,27 @@ public class RecordActivity extends AppCompatActivity {
 
     }
 
+    private void toggleButton(View v1,View v2,View v3) {
+
+        v2.setBackgroundResource(R.color.colorPrimary);
+        ((Button) v2).setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+        ((Button) v2).setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorPrimaryDark));
+        v2.setEnabled(true);
+
+        v3.setBackgroundResource(R.color.colorPrimary);
+        ((Button) v3).setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+        ((Button) v3).setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorPrimaryDark));
+        v3.setEnabled(true);
+
+        v1.setBackgroundResource(R.color.grey);
+        ((Button) v1).setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_done_black_24dp),null);
+        ((Button) v1).setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.green));
+        v1.setEnabled(false);
+    }
 
 
+    public void zoomStudentPhoto(View view) {
 
 
+    }
 }

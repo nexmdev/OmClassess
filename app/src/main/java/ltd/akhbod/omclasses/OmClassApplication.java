@@ -14,5 +14,6 @@ public class OmClassApplication extends Application {
     public void onCreate() {
         super.onCreate();
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
     }
 }

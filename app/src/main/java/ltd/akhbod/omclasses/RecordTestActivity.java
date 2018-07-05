@@ -192,7 +192,7 @@ public class RecordTestActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), finalCount+" uploaded", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Upload Successful !", Toast.LENGTH_SHORT).show();
                     }})
 
 
