@@ -83,7 +83,7 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-
+        getSupportActionBar().setTitle("Student Upload");
         ref= FirebaseDatabase.getInstance().getReference();
         garbageRef=FirebaseDatabase.getInstance().getReference().child("DataManage").child("isMigrated_Deleted");
         garbageRef.keepSynced(true);
@@ -100,8 +100,8 @@ public class UploadActivity extends AppCompatActivity {
         mMobNoEditText=findViewById(R.id.upload_mobNo);
 
         Button mUploadBtn = findViewById(R.id.upload_uploadBtn);
-        mOriginalImageText=findViewById(R.id.upload_originalKB);
-        mProcessesImageText=findViewById(R.id.upload_processedKB);
+        //mOriginalImageText=findViewById(R.id.upload_originalKB);
+       // mProcessesImageText=findViewById(R.id.upload_processedKB);
 
 
         mDurationText.setText(selectedDuration);
@@ -410,7 +410,7 @@ public class UploadActivity extends AppCompatActivity {
 
     private void setCompressedImage() {
         mImage.setImageBitmap(BitmapFactory.decodeFile(compressedImage.getAbsolutePath()));
-        mProcessesImageText.setText(String.format("Size : %s", getReadableFileSize(compressedImage.length())));
+      //  mProcessesImageText.setText(String.format("Size : %s", getReadableFileSize(compressedImage.length())));
 
      //   Toast.makeText(this, "Compressed image save in " + compressedImage.getPath(), Toast.LENGTH_LONG).show();
         Log.d("Compressor", "Compressed image save in " + compressedImage.getPath());
@@ -487,7 +487,7 @@ public class UploadActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mOriginalImageText.setText(String.format("Size : %s", getReadableFileSize(actualImage.length())));
+           // mOriginalImageText.setText(String.format("Size : %s", getReadableFileSize(actualImage.length())));
 
             //starts compressing
             customCompressImage();
