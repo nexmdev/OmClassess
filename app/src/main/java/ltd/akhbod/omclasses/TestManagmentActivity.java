@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -63,6 +64,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     //layout variables
     TextView mDateText;
     Spinner mSubjectSpinner,mClassSpinner;
+    EditText mOutOfMarksText;
     String mSelectedSubject,mSelectedClass,currentDate;
     RecyclerView recyclerView;
     Button mUpload;
@@ -103,6 +105,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         mDateText=findViewById(R.id.TestManagment_dateText);
         mSubjectSpinner=findViewById(R.id.TestManagment_subjectSpinner);
         mClassSpinner=findViewById(R.id.TestManagment_classSpinner);
+        mOutOfMarksText=findViewById(R.id.TestManagment_outOfMarksText);
         mUpload=findViewById(R.id.TestManagment_upload);
 
 
@@ -304,7 +307,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         ///uploading combined string
 
-        SearchByDateDetails obj2=new SearchByDateDetails(totalPresent.toString());
+        SearchByDateDetails obj2=new SearchByDateDetails(totalPresent.toString(),Integer.parseInt(mOutOfMarksText.getText().toString()));
         ref.child(mSelectedClass+durationText).child("search").child(currentDate+"-"+mSelectedSubject).setValue(obj2).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

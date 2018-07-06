@@ -15,7 +15,7 @@ import ltd.akhbod.omclasses.R;
 
 public class StudentScorecard_record extends RecyclerView.ViewHolder {
     View mView;
-    TextView mDate, mSubject, mPresenty, mMarks;
+    public TextView mDate, mSubject, mPresenty, mMarks;
 
     public StudentScorecard_record(View itemView) {
         super(itemView);
@@ -28,7 +28,7 @@ public class StudentScorecard_record extends RecyclerView.ViewHolder {
 
     }
 
-    public void setSingleRecord(Context context,String date, String subject, String presenty, String marks) {
+    public void setSingleRecord(Context context,String date, String subject, String presenty) {
 
         mDate.setText(date);
        //mSubject.setText(subject);
@@ -38,6 +38,5 @@ public class StudentScorecard_record extends RecyclerView.ViewHolder {
         }else{
             mPresenty.setTextColor(Color.RED);
         }
-        mMarks.setText(marks);
     }
 }

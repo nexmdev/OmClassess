@@ -48,9 +48,9 @@ public class RecordActivity extends AppCompatActivity {
     private ImageView studentPhoto;
 
     //Activity variables
-    private String sName,nSchool,nAddress,nMobNo,studentID,
-            mSelectedStanderd,photoUrl,finalMessage,durationText;
 
+     private String sName,nSchool,nAddress,nMobNo,studentID,
+            mSelectedStanderd,photoUrl,finalMessage,durationText;
 
     //firebase variables
     private DatabaseReference ref;
@@ -71,8 +71,9 @@ public class RecordActivity extends AppCompatActivity {
         durationText = intent.getStringExtra("duration");
         mSelectedStanderd=intent.getStringExtra("class");
         photoUrl = intent.getStringExtra("url");
+        durationText=intent.getStringExtra("duration");
 
-        ref=FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child("record");
+        ref=FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
 
         mName=findViewById(R.id.record_name);
         mSchool=findViewById(R.id.record_school);
@@ -150,7 +151,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private void makeQuery(final String subject) {
 
-        Query query=ref.child(studentID).orderByChild("subject").equalTo(subject);
+        Query query=ref.child("record").child(studentID).orderByChild("subject").equalTo(subject);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -190,13 +191,25 @@ public class RecordActivity extends AppCompatActivity {
                 RecordDetails.class,
                 R.layout.record_singlerecord_layout,
                 StudentScorecard_record.class,
-                ref.child(studentID)
+                ref.child("record").child(studentID)
 
         ) {
             @Override
-            protected void populateViewHolder(StudentScorecard_record viewHolder, RecordDetails model, int position) {
+            protected void populateViewHolder(final StudentScorecard_record viewHolder, final RecordDetails model, int position) {
                 String date = firebaseRecyclerAdapter.getRef(position).getKey();
-                viewHolder.setSingleRecord(getApplicationContext(),date, model.getSubject(), model.getPresenty(), model.getMarks());
+
+                viewHolder.setSingleRecord(getApplicationContext(),date, model.getSubject(), model.getPresenty());
+                ref.child("search").child(date).child("outOfMarks").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    viewHolder.mMarks.setText(model.getMarks()+"/"+dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         };
 

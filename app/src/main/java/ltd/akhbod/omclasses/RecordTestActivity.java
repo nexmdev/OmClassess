@@ -36,6 +36,7 @@ public class RecordTestActivity extends AppCompatActivity {
 
     //Activity variables
     String key=null,totalPresent,mSelectedStanderd,durationText;
+    int outOfMarks;
     ArrayList<String> marksArray=new ArrayList<>();
     String[] nosToUpload=null;
     ArrayList<String> studentIdArray=new ArrayList<>();
@@ -58,11 +59,11 @@ public class RecordTestActivity extends AppCompatActivity {
         durationText=intent.getStringExtra("duration");
         key = intent.getStringExtra("key");
         totalPresent=intent.getStringExtra("totalPresent");
+        outOfMarks= Integer.parseInt(intent.getStringExtra("outofmarks"));
 
         ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
         ref.keepSynced(true);
-        getSupportActionBar().setTitle(mSelectedStanderd + " / " + key);
-
+        getSupportActionBar().setTitle(mSelectedStanderd + " / " + key+"   "+outOfMarks);
 
         mProgressBar=findViewById(R.id.record_test_progressBar);
         mListView = findViewById(R.id.record_test_listView);

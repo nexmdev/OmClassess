@@ -63,6 +63,7 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
                 intent.putExtra("totalPresent",model.getTotalPresent());
                 intent.putExtra("class",mSelectedStanderdText);
                 intent.putExtra("duration",durationText);
+                intent.putExtra("outofmarks",""+model.getOutOfMarks());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 applicationContext.startActivity(intent);
 
