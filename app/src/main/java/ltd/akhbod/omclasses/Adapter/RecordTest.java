@@ -4,7 +4,6 @@ import android.content.Context;
 import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -28,29 +26,34 @@ import ltd.akhbod.omclasses.R;
 
 public class RecordTest extends BaseAdapter {
 
-    Context c;
+    final Context c;
 
     String key=null;
     int TotalStudentCount=0;
 
     public ArrayList<String> marksArray=new ArrayList<>();
-    public String[] noToUpload;
+    public final String[] noToUpload;
     ArrayList<String> studentIdArray=new ArrayList<>();
     ArrayList<String> studentNamesArray=new ArrayList<>();
     ArrayList<Boolean> smsSendArray=new ArrayList<>();
     ArrayList<String> mobNoArray=new ArrayList<>();
 
-    String dateOfTest,subjectOfTest,mSelectedStanderd,durationText;
+    final String dateOfTest;
+    final String subjectOfTest;
+    final String mSelectedStanderd;
+    final String durationText;
+    final String TotalMarks;
 
 
     public RecordTest(Context c, ArrayList<String> marksArray, ArrayList<String> studentIds, ArrayList<String> studentNames,
-                      String key, int totalCount, ArrayList<Boolean> smsSendArray, ArrayList<String> mobNoArray, String mSelectedStanderd, String durationText){
+                      String key, int totalCount, ArrayList<Boolean> smsSendArray, ArrayList<String> mobNoArray, String mSelectedStanderd, String durationText,int totalMarks){
         this.c=c;
         this.key=key;
         this.noToUpload=new String[totalCount];
         this.TotalStudentCount=totalCount;
         this.mSelectedStanderd= mSelectedStanderd;
         this.durationText= durationText;
+        this.TotalMarks = String.valueOf(totalMarks);
 
         this.marksArray=marksArray;
         this.studentIdArray=studentIds;
@@ -104,14 +107,15 @@ public class RecordTest extends BaseAdapter {
         mSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSend.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
-                mSend.setEnabled(false);
-                mSend.setImageResource(R.drawable.ic_done_black_24dp);
+
                 String marks = marksArray.get(position);
                 if (marks.isEmpty()){
                     Toast.makeText(c,"Please fill marks first !",Toast.LENGTH_SHORT).show();
                 }else{
                     sendMessage(marks,mobNoArray.get(position),studentNamesArray.get(position),position);
+                    mSend.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+                    mSend.setEnabled(false);
+                    mSend.setImageResource(R.drawable.ic_done_black_24dp);
                 }
 
 
@@ -155,7 +159,7 @@ public class RecordTest extends BaseAdapter {
 
         SmsManager manager = SmsManager.getDefault();
 
-        String test = "आपला पाल्य "+name+" ला दि."+dateOfTest+" ला झालेल्या " +subjectOfTest +" च्या टेस्टमध्ये "+marks+" मार्कस मिळाले. ओम क्लासेस";
+        String test = "आपला पाल्य "+name+" ला दि."+dateOfTest+" ला झालेल्या " +subjectOfTest +" च्या टेस्टमध्ये "+TotalMarks+" पैकी "+marks+" मार्कस मिळाले. ओम क्लासेस";
         ArrayList<String> parts = manager.divideMessage(test);
         manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
 

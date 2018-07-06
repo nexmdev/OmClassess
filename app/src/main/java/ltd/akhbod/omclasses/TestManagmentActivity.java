@@ -1,16 +1,13 @@
 package ltd.akhbod.omclasses;
 
-import android.*;
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,8 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +38,6 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.mvc.imagepicker.ImagePicker;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,25 +56,29 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
 
     //layout variables
-    TextView mDateText;
-    Spinner mSubjectSpinner,mClassSpinner;
-    EditText mOutOfMarksText;
-    String mSelectedSubject,mSelectedClass,currentDate;
-    RecyclerView recyclerView;
-    Button mUpload;
+    private TextView mDateText;
+    private Spinner mSubjectSpinner;
+    private Spinner mClassSpinner;
+    private EditText mOutOfMarksText;
+    private String mSelectedSubject;
+    private String mSelectedClass;
+    private String currentDate;
+    private RecyclerView recyclerView;
+    private Button mUpload;
 
 
     //Activity variables
-    DatePickerDialog datePickerDialog;
-    ArrayList<String> presentArray=new ArrayList<>();
-    ArrayList<String> studentIdArray=new ArrayList<>();
-    ArrayList<String> studentNamesArray=new ArrayList<>();
-    ClickatellHttp httpApi;
-    String MESSAGE_ID=null,durationText;
-    int currentYear;
+    private DatePickerDialog datePickerDialog;
+    private  ArrayList<String> presentArray=new ArrayList<>();
+    private final ArrayList<String> studentIdArray=new ArrayList<>();
+    private final ArrayList<String> studentNamesArray=new ArrayList<>();
+    private ClickatellHttp httpApi;
+    String MESSAGE_ID=null;
+    private String durationText;
+    private int currentYear;
 
     //firebase variables
-    DatabaseReference ref;
+    private DatabaseReference ref;
 
 
 
@@ -91,6 +89,9 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         setContentView(R.layout.activity_test_manament);
 
 
+        if(savedInstanceState != null){
+            presentArray = savedInstanceState.getStringArrayList("Presenty");
+        }
         //checking permissions
         checkPermission();
 
@@ -135,6 +136,9 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedClass=parent.getItemAtPosition(position).toString();
+                studentIdArray.clear();
+                studentNamesArray.clear();
+                presentArray.clear();
                 setFirebaseAdapter();
             }
 
@@ -165,13 +169,36 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         mUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             uploadDetails();
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(TestManagmentActivity.this);
+                builder.setMessage("Do you want to upload Test Data ?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        uploadDetails();
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                android.support.v7.app.AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+
             }});
 
 
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putStringArrayList("Presenty",presentArray);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -204,9 +231,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
     private void setFirebaseAdapter() {
 
-        studentIdArray.clear();
-        studentNamesArray.clear();
-        presentArray.clear();
+
 
         Log.d("abhi","setFirebaseAdapter()");
 
@@ -225,10 +250,14 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
             protected void populateViewHolder(final PresentyList_testManagemnet viewHolder, final ProfileDetails model, final int position) {
 
                 Log.d("abhi",""+position);
+                String present = "x";
+                if(presentArray.size()> position){
+                     present = presentArray.get(position);
+                }
 
-                viewHolder.setDetails(getApplicationContext(),model,position);
-                viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
-                viewHolder.mSendMessage.setEnabled(false);
+                viewHolder.setDetails(getApplicationContext(),model,position,present);
+              //  viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+              //  viewHolder.mSendMessage.setEnabled(false);
 
                 viewHolder.mSendMessage.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -243,7 +272,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     }});
                 studentIdArray.add(position,model.getId());
                 studentNamesArray.add(position,model.getName());
-                presentArray.add(position,"yes");
+               // presentArray.add(position,"yes");
 
                 viewHolder.mPresenetLayout.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -251,7 +280,8 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     public void onClick(View v) {
                         viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
                         viewHolder.mAbsentLayout.setBackground(null);
-                        presentArray.set(position,"yes");
+                        presentArray.add(position,"yes");
+                       // viewHolder.mView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.grey));
 
                         viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
                         viewHolder.mSendMessage.setEnabled(false);
@@ -264,7 +294,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     public void onClick(View v) {
                         viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
                         viewHolder.mPresenetLayout.setBackground(null);
-                        presentArray.set(position,"no");
+                        presentArray.add(position,"no");
 
                         viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp);
                         viewHolder.mSendMessage.setEnabled(true);
@@ -289,9 +319,14 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         //making combine string
 
+                if((mOutOfMarksText.getText().toString()).isEmpty()){
+                    mOutOfMarksText.setError("Enter marks");
+                    Toast.makeText(getApplicationContext(),"Please type Total Marks !",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 int count=0;
                 int tempCount=0;
-                final StringBuffer totalPresent=new StringBuffer();
+                final StringBuilder totalPresent=new StringBuilder();
                 while ( count < presentArray.size()){
                       String temp;
 
@@ -514,7 +549,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                 ).withListener(new MultiplePermissionsListener() {
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport report) {
-                if (report.areAllPermissionsGranted() == true) {
+                if (report.areAllPermissionsGranted()) {
                     Toast.makeText(getApplicationContext(), "You can now send SMS", Toast.LENGTH_SHORT).show();
                    }
 

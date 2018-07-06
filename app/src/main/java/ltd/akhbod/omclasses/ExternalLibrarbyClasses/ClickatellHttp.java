@@ -44,7 +44,9 @@ public class ClickatellHttp {
     /**
      * The three private variables to use for authentication.
      */
-    private String userName, apiId, password;
+    private final String userName;
+    private final String apiId;
+    private final String password;
 
     /**
      * Create a HTTP object, and set the auth, but not test the auth.

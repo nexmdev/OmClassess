@@ -6,6 +6,13 @@
     android:padding="16dp"
     tools:context="ltd.akhbod.omclasses.RecordTestActivity">
 
+    <TextView
+        android:id="@+id/record_test_total_marks_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="TextView" />
+
     <ProgressBar
         android:id="@+id/record_test_progressBar"
         style="?android:attr/progressBarStyleLarge"
@@ -17,6 +24,7 @@
         android:id="@+id/record_test_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="25dp"
         android:paddingBottom="50dp" />
 
     <Button

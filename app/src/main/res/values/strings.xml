@@ -21,12 +21,5 @@
         <item>date</item>
     </string-array>
 
-    <string-array name="duration_year">
-        <item>2016-2017</item>
-        <item>2017-2018</item>
-        <item>2018-2019</item>
-        <item>2019-2020</item>
-    </string-array>
-
 
 </resources>

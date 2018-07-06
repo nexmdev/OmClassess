@@ -17,8 +17,8 @@ import ltd.akhbod.omclasses.RecordActivity;
 
 public class SearchByStudent_Search extends RecyclerView.ViewHolder {
 
-    TextView mName;
-    View mView;
+    final TextView mName;
+    final View mView;
 
     public SearchByStudent_Search(View itemView) {
         super(itemView);
@@ -36,7 +36,7 @@ public class SearchByStudent_Search extends RecyclerView.ViewHolder {
         mName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(applicationContext,model.getName(),Toast.LENGTH_SHORT);
+                //Toast.makeText(applicationContext,model.getName(),Toast.LENGTH_SHORT);
                 Intent intent = new Intent(applicationContext, RecordActivity.class);
                 intent.putExtra("id", model.getId());
                 intent.putExtra("name", model.getName());

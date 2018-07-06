@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context="ltd.akhbod.omclasses.MainActivity">
 
     <FrameLayout
@@ -38,21 +39,18 @@
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/textView9"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/main_upload"
         android:background="@color/grey" />
 
     <TextView
-        android:id="@+id/textView10"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/main_testManagmnt"
         android:background="@color/grey" />
 
     <TextView
-        android:id="@+id/textView11"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/main_record"

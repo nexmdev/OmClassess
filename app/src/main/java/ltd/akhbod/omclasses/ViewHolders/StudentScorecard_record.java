@@ -14,8 +14,11 @@ import ltd.akhbod.omclasses.R;
  */
 
 public class StudentScorecard_record extends RecyclerView.ViewHolder {
-    View mView;
-    public TextView mDate, mSubject, mPresenty, mMarks;
+    final View mView;
+    public final TextView mDate;
+    public final TextView mSubject;
+    public final TextView mPresenty;
+    public final TextView mMarks;
 
     public StudentScorecard_record(View itemView) {
         super(itemView);

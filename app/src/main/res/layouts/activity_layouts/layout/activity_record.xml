@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,8 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey"
+        android:layout_height="wrap_content"
         android:padding="10dp">
 
 
@@ -34,7 +32,6 @@
                 android:onClick="zoomStudentPhoto" />
 
             <LinearLayout
-                android:id="@+id/linearLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -47,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:text="Abhijit Mahesh Bodulwar"
                     android:textColor="@color/colorAccent"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/record_address"
@@ -55,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="Durgamata Ward , Ghatanji"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/record_school"
@@ -63,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="Shri Samarth,Ghatanji"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/record_phoneno"
@@ -71,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="+918668737792"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -98,6 +95,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:background="@android:color/holo_blue_dark"
+                android:onClick="callParents"
                 android:text="Call Parents" />
 
             <Button
@@ -124,6 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/record_getScoreCard"
             android:layout_marginTop="10dp"
+            android:baselineAligned="false"
             android:orientation="horizontal"
             android:visibility="gone">
 
@@ -141,7 +140,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Physics"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/record_physicsScore"
@@ -166,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Chemistry"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/record_chemScore"
@@ -190,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Maths"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/record_mathsScore"

@@ -9,11 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import ltd.akhbod.omclasses.ModalClasses.RecordDetails;
-import ltd.akhbod.omclasses.ModalClasses.ProfileDetails;
+
 import java.util.ArrayList;
 import ltd.akhbod.omclasses.Adapter.RecordTest;
 
@@ -30,7 +30,6 @@ public class RecordTestActivity extends AppCompatActivity {
 
     //layout variables
     private ListView mListView;
-    private Button mUploadMarks;
     private ProgressBar mProgressBar;
 
 
@@ -39,10 +38,10 @@ public class RecordTestActivity extends AppCompatActivity {
     int outOfMarks;
     ArrayList<String> marksArray=new ArrayList<>();
     String[] nosToUpload=null;
-    ArrayList<String> studentIdArray=new ArrayList<>();
-    ArrayList<String> studentNamesArray=new ArrayList<>();
-    ArrayList<Boolean> smsSendArray=new ArrayList<>();
-    ArrayList<String> mobNoArray=new ArrayList<>();
+    final ArrayList<String> studentIdArray=new ArrayList<>();
+    final ArrayList<String> studentNamesArray=new ArrayList<>();
+    final ArrayList<Boolean> smsSendArray=new ArrayList<>();
+    final ArrayList<String> mobNoArray=new ArrayList<>();
 
     //Firebase variables
     DatabaseReference ref;
@@ -63,11 +62,14 @@ public class RecordTestActivity extends AppCompatActivity {
 
         ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
         ref.keepSynced(true);
-        getSupportActionBar().setTitle(mSelectedStanderd + " / " + key+"   "+outOfMarks);
+        getSupportActionBar().setTitle(mSelectedStanderd + " / " + key);
+
+        TextView totalMarksTextView = findViewById(R.id.record_test_total_marks_textView);
+        totalMarksTextView.setText("  Total Marks : "+outOfMarks);
 
         mProgressBar=findViewById(R.id.record_test_progressBar);
         mListView = findViewById(R.id.record_test_listView);
-        mUploadMarks = findViewById(R.id.record_test_uploadBtn);
+        Button mUploadMarks = findViewById(R.id.record_test_uploadBtn);
 
 
         mUploadMarks.setOnClickListener(new View.OnClickListener() {
@@ -213,7 +215,7 @@ public class RecordTestActivity extends AppCompatActivity {
 
     private void setAdapter() {
         adapter=new RecordTest(getApplicationContext(),marksArray,studentIdArray,
-                studentNamesArray,key,studentNamesArray.size(),smsSendArray,mobNoArray,mSelectedStanderd,durationText);
+                studentNamesArray,key,studentNamesArray.size(),smsSendArray,mobNoArray,mSelectedStanderd,durationText,outOfMarks);
         mListView.setAdapter(adapter);
     }
 

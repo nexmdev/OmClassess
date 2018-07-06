@@ -1,8 +1,6 @@
 package ltd.akhbod.omclasses;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -42,11 +40,8 @@ import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.mvc.imagepicker.ImagePicker;
 
 import java.io.File;
@@ -68,17 +63,15 @@ public class UploadActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private File actualImage;
     private File compressedImage;
-    private String selectedStanderd,selectedDuration;
+    private String selectedStanderd;
 
 
     //layout variables
     private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText,mDurationText;
     private ImageView mImage;
     private TextView mOriginalImageText,mProcessesImageText;
-    private Button mUploadBtn;
-    private Spinner mStanderedSpinner;
     private String pushId,studentPhotoUrl = "X";
-    int currentYear;
+    private int currentYear;
 
     //firebase variables
     private DatabaseReference ref,garbageRef;
@@ -96,17 +89,17 @@ public class UploadActivity extends AppCompatActivity {
         garbageRef.keepSynced(true);
         currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
         int nextYear=currentYear+1;
-        selectedDuration=currentYear+"-"+nextYear;
+        String selectedDuration = currentYear + "-" + nextYear;
 
         mImage=findViewById(R.id.upload_image);
         mNameEditText=findViewById(R.id.upload_name);
         mAddressEditText=findViewById(R.id.upload_address);
-        mStanderedSpinner=findViewById(R.id.upload_standeredSpinner);
+        Spinner mStanderedSpinner = findViewById(R.id.upload_standeredSpinner);
         mDurationText=findViewById(R.id.upload_durationText);
         mSchoolEditText=findViewById(R.id.upload_school);
         mMobNoEditText=findViewById(R.id.upload_mobNo);
 
-        mUploadBtn=findViewById(R.id.upload_uploadBtn);
+        Button mUploadBtn = findViewById(R.id.upload_uploadBtn);
         mOriginalImageText=findViewById(R.id.upload_originalKB);
         mProcessesImageText=findViewById(R.id.upload_processedKB);
 
@@ -140,8 +133,8 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String mNameText,mAddressText,mSchoolText,mMobNoText,mImageUrl="2n38u1e",mId=pushId;
-                pushId=ref.push().getKey().toString();
+                String mNameText,mAddressText,mSchoolText,mMobNoText;
+                pushId= ref.push().getKey();
 
                 mNameText=mNameEditText.getText().toString();
                 mAddressText=mAddressEditText.getText().toString();
@@ -158,10 +151,7 @@ public class UploadActivity extends AppCompatActivity {
                 }else if(mSchoolText.isEmpty()){
                     mSchoolEditText.setError("Please enter school");
                     return;
-                }else if(mMobNoText.isEmpty() || mMobNoText.length()<10){
-
                 }else if(mMobNoText.length()!= 10){
-
                     mMobNoEditText.setError("Please enter valid mobile number");
                     return;
                 }
@@ -256,6 +246,7 @@ public class UploadActivity extends AppCompatActivity {
         mAddressEditText.setText("");
         mMobNoEditText.setText("");
         studentPhotoUrl="X";
+        mSchoolEditText.setText("");
 
     }
 
@@ -387,7 +378,7 @@ public class UploadActivity extends AppCompatActivity {
 
 
 
-    public void customCompressImage() {
+    private void customCompressImage() {
 
 
             if (actualImage == null) {
@@ -426,7 +417,7 @@ public class UploadActivity extends AppCompatActivity {
 
         Bitmap studentPhoto = BitmapFactory.decodeFile(compressedImage.getAbsolutePath());
         mImage.setImageBitmap(studentPhoto);
-        pushId=ref.push().getKey().toString();
+        pushId= ref.push().getKey();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         Uri file = Uri.fromFile(compressedImage);
         StorageReference storageRef = storage.getReference();
@@ -451,7 +442,7 @@ public class UploadActivity extends AppCompatActivity {
 
 
 
-    public String getReadableFileSize(long size) {
+    private String getReadableFileSize(long size) {
         if (size <= 0) {
             return "0";
         }
@@ -470,7 +461,7 @@ public class UploadActivity extends AppCompatActivity {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ).withListener(new MultiplePermissionsListener() {
             @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
-                if(report.areAllPermissionsGranted()==true){
+                if(report.areAllPermissionsGranted()){
                     ImagePicker.pickImage(UploadActivity.this, "Select your image:");
                 }
 

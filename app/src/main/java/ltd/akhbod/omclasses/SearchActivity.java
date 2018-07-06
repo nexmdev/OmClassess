@@ -2,8 +2,6 @@ package ltd.akhbod.omclasses;
 
 import android.app.DatePickerDialog;
 import android.icu.text.SimpleDateFormat;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +12,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -47,8 +42,6 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     //layout variables
     private EditText mSearchField;
-    private Spinner mSearchTypeSpinner,mStanderdSpinner;
-    private ImageView mSerachBtn,mDateBtn;
     private RecyclerView mRecyclerView;
     private ProgressBar progressBar;
     private TextView noDataTextView;
@@ -74,12 +67,12 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         databaseRef = FirebaseDatabase.getInstance().getReference();
 
         mSearchField = findViewById(R.id.search_field);
-        mSearchTypeSpinner=findViewById(R.id.search_type);
-        mStanderdSpinner=findViewById(R.id.search_standerd);
-        mSerachBtn = findViewById(R.id.search_btn);
-        mDateBtn=findViewById(R.id.search_date);
+        Spinner mSearchTypeSpinner = findViewById(R.id.search_type);
+        Spinner mStanderdSpinner = findViewById(R.id.search_standerd);
+        ImageView mSerachBtn = findViewById(R.id.search_btn);
+        ImageView mDateBtn = findViewById(R.id.search_date);
         mRecyclerView = findViewById(R.id.result_list);
-        progressBar = (ProgressBar)findViewById(R.id.search_progressBar) ;
+        progressBar = findViewById(R.id.search_progressBar);
         noDataTextView = findViewById(R.id.search_no_data_textview);
 
         int currentDate= Integer.parseInt(new SimpleDateFormat("dd", Locale.getDefault()).format(new Date()));
@@ -204,7 +197,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     private void firebaseStudentSearch(final String searchText) {
 
-        Query query=null;
+        Query query;
 
             if(searchText.isEmpty())    query=databaseRef.child(SelectedStanderdText+durationText).child("profile").orderByChild("name");
             else                        query=databaseRef.child(SelectedStanderdText+durationText).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
@@ -240,7 +233,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     private void firebaseTestSearch(final String searchText) {
 
-        Query query=null;
+        Query query;
 
         if(searchText.isEmpty())    query=databaseRef.child(SelectedStanderdText+durationText).child("search").orderByKey();
         else                        query=databaseRef.child(SelectedStanderdText+durationText).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");

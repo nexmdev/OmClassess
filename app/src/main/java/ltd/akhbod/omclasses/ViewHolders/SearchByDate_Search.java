@@ -16,8 +16,8 @@ import ltd.akhbod.omclasses.ModalClasses.SearchByDateDetails;
 
 public class SearchByDate_Search extends RecyclerView.ViewHolder {
 
-    TextView mName;
-    View mView;
+    final TextView mName;
+    final View mView;
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }

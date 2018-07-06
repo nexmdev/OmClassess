@@ -1,7 +1,5 @@
 package ltd.akhbod.omclasses.ModalClasses;
 
-import android.provider.ContactsContract;
-
 /**
  * Created by ibm on 07-06-2018.
  */
