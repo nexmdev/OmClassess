@@ -64,6 +64,7 @@ public class UploadActivity extends AppCompatActivity {
     private File actualImage;
     private File compressedImage;
     private String selectedStanderd;
+    private ProfileDetails obj;
 
 
     //layout variables
@@ -156,7 +157,7 @@ public class UploadActivity extends AppCompatActivity {
                     return;
                 }
 
-                ProfileDetails obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId);
+                obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId);
 
                 checkMigrationDeletion(obj,pushId);
             }});
@@ -189,6 +190,7 @@ public class UploadActivity extends AppCompatActivity {
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
                             cleanUpPage();
+                            garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
                         }})
 
 
@@ -270,24 +272,29 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                int temp=0;
-                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
+                if(dataSnapshot.exists()){
+                    int temp=0;
+                    for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
-                    Log.d("snap",snap.getKey());
-                    String[] parts=snap.getKey().split("th");
+                        Log.d("snap",snap.getKey());
+                        String[] parts=snap.getKey().split("th");
 
-                    if(keyToCheck.equals(parts[1])) {
+                        if(keyToCheck.equals(parts[1])) {
 
-                        if (parts[0].equals("11") || parts[0].equals("12")) {
-                            migrateAndDeleteDialog(snap.getKey());}
+                            if (parts[0].equals("11") || parts[0].equals("12")) {
+                                migrateAndDeleteDialog(snap.getKey());}
                             break;
+                        }
+
+                        else if(temp==0){                       //will true only when there is no migrate or detected at temp=0
+                            uploadData(obj, pushId);}        //trigeering uploadData() at temp>0 will have anologous behaviour
+
+                        temp++;
                     }
-
-                    else if(temp==0){                       //will true only when there is no migrate or detected at temp=0
-                           uploadData(obj, pushId);}        //trigeering uploadData() at temp>0 will have anologous behaviour
-
-                    temp++;
+                }else{
+                    uploadData(obj, pushId);
                 }
+
             }
 
             @Override
@@ -361,7 +368,7 @@ public class UploadActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {}});
-
+                   uploadData(obj,pushId);
             }});
 
         builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {

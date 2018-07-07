@@ -101,7 +101,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         httpApi = new ClickatellHttp("Abhijit_click", "U3zUw3cKSeaViiv_c5C1OA== ", "Abhijit@click");
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
-
+        durationText= "("+currentYear+"-"+(currentYear+1)+")";
 
         mDateText=findViewById(R.id.TestManagment_dateText);
         mSubjectSpinner=findViewById(R.id.TestManagment_subjectSpinner);
@@ -213,14 +213,17 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
                 Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
 
-                for (  DataSnapshot snap : dataSnapshot.getChildren()) {
+                if(dataSnapshot.exists()){
+                    for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
-                    if (snap.getKey().contains("11th")) {
-                        String parts1[] = snap.getKey().split("11th");
-                        durationText = parts1[1];
-                        setFirebaseAdapter();
+                        if (snap.getKey().contains("11th")) {
+                            String parts1[] = snap.getKey().split("11th");
+                            durationText = parts1[1];
+                        }
                     }
                 }
+                setFirebaseAdapter();
+
             }
 
             @Override
