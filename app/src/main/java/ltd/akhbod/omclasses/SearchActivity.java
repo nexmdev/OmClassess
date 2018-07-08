@@ -182,6 +182,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
                     for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
                         if (snap.getKey().contains(SelectedStanderdText)) {
+                            String parts[]=snap.getKey().split("th");
+                            durationText=parts[1];
                             keyToSearch=snap.getKey();
 
                             if (SearchTypeText.equals("student")) firebaseStudentSearch("");

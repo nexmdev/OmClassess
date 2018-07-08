@@ -121,7 +121,7 @@ public class RecordTestActivity extends AppCompatActivity {
             ref.child("record").child(studentIdArray.get(finalCount)+"/"+key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
+                    Log.d("snap",""+dataSnapshot);
                     RecordDetails obj=dataSnapshot.getValue(RecordDetails.class);
 
                     if (!obj.getMarks().equals("00"))
