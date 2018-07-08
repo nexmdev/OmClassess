@@ -7,7 +7,6 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -74,7 +73,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     private final ArrayList<String> studentNamesArray=new ArrayList<>();
     private ClickatellHttp httpApi;
     String MESSAGE_ID=null;
-    private String durationText;
+    private String durationText,keyToSearch;
     private int currentYear;
 
     //firebase variables
@@ -97,7 +96,6 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
         // Initialize the clickatell object:
         ref= FirebaseDatabase.getInstance().getReference();
-        getDurationQuery();
         httpApi = new ClickatellHttp("Abhijit_click", "U3zUw3cKSeaViiv_c5C1OA== ", "Abhijit@click");
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
@@ -139,7 +137,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                 studentIdArray.clear();
                 studentNamesArray.clear();
                 presentArray.clear();
-                setFirebaseAdapter();
+                getDurationQuery();
             }
 
             @Override
@@ -202,40 +200,48 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     @Override
     protected void onStart() {
         super.onStart();
-        setFirebaseAdapter();
+
     }
 
     private void getDurationQuery() {
 
-        ref.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+       ref.child("DataManage").child("isMigrated_Deleted")
+               .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
 
+                int count=0;
                 for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
-                    if (snap.getKey().contains("11th")) {
-                        String parts1[] = snap.getKey().split("11th");
-                        durationText = parts1[1];
+                    if (snap.getKey().contains(mSelectedClass)) {
+                        keyToSearch=snap.getKey();
                         setFirebaseAdapter();
+                        break;
                     }
+                    count++;
                 }
+                if(count == dataSnapshot.getChildrenCount())
+                    Toast.makeText(getApplicationContext(),"No record Found For Given Class",Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}});
+
     }
 
 
 
     private void setFirebaseAdapter() {
 
-
+        presentArray.clear();
+        studentIdArray.clear();
+        studentNamesArray.clear();
 
         Log.d("abhi","setFirebaseAdapter()");
 
-        Query query=ref.child(mSelectedClass+durationText).child("profile").orderByChild("name");
+        Query query=ref.child(keyToSearch).child("profile").orderByChild("name");
 
 
         FirebaseRecyclerAdapter<ProfileDetails,PresentyList_testManagemnet> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<ProfileDetails, PresentyList_testManagemnet>(
@@ -272,7 +278,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     }});
                 studentIdArray.add(position,model.getId());
                 studentNamesArray.add(position,model.getName());
-               // presentArray.add(position,"yes");
+                presentArray.add(position,"yes");
 
                 viewHolder.mPresenetLayout.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -280,7 +286,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     public void onClick(View v) {
                         viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
                         viewHolder.mAbsentLayout.setBackground(null);
-                        presentArray.add(position,"yes");
+                        presentArray.set(position,"yes");
                        // viewHolder.mView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.grey));
 
                         viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
@@ -294,7 +300,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     public void onClick(View v) {
                         viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
                         viewHolder.mPresenetLayout.setBackground(null);
-                        presentArray.add(position,"no");
+                        presentArray.set(position,"no");
 
                         viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp);
                         viewHolder.mSendMessage.setEnabled(true);
@@ -341,9 +347,9 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                 }
 
         ///uploading combined string
-
+        Log.d("don","upload:"+keyToSearch);
         SearchByDateDetails obj2=new SearchByDateDetails(totalPresent.toString(),Integer.parseInt(mOutOfMarksText.getText().toString()));
-        ref.child(mSelectedClass+durationText).child("search").child(currentDate+"-"+mSelectedSubject).setValue(obj2).addOnSuccessListener(new OnSuccessListener<Void>() {
+        ref.child(keyToSearch).child("search").child(currentDate+"-"+mSelectedSubject).setValue(obj2).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(getApplicationContext(), "" + "data uploaded successfully", Toast.LENGTH_SHORT).show();
@@ -365,7 +371,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                    Log.d("upload",""+count);
 
                     RecordDetails obj = new RecordDetails(mSelectedSubject,presentArray.get(count), "00",false);
-                    ref.child(mSelectedClass+durationText).child("record").child(studentIdArray.get(count)).child(currentDate+"-"+mSelectedSubject).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    ref.child(keyToSearch).child("record").child(studentIdArray.get(count)).child(currentDate+"-"+mSelectedSubject).setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 
