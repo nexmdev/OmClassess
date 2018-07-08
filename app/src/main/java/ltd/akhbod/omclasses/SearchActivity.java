@@ -79,7 +79,6 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         int currentMonth= Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
         currentMonth--;
         int currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
-        durationText = "("+currentYear+"-"+(currentYear+1)+")";
         datePickerDialog = new DatePickerDialog(
                 SearchActivity.this,  SearchActivity.this, currentYear,currentMonth,
                 currentDate);
