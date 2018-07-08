@@ -152,7 +152,7 @@ public class UploadActivity extends AppCompatActivity {
                 }else if(mSchoolText.isEmpty()){
                     mSchoolEditText.setError("Please enter school");
                     return;
-                }else if(mMobNoText.length()!= 10){
+                }else if(mMobNoText.length()>1){
                     mMobNoEditText.setError("Please enter valid mobile number");
                     return;
                 }
@@ -264,34 +264,32 @@ public class UploadActivity extends AppCompatActivity {
     private void checkMigrationDeletion(final ProfileDetails obj, final String pushId) {
 
           String[] parts=mDurationText.getText().toString().split("-");
-          final String keyToCheck="("+(Integer.parseInt(parts[0])-1)+"-"+(Integer.parseInt(parts[0]))+")".replace(" ","");
+          final String keyToCheckPrevious=selectedStanderd+"("+(Integer.parseInt(parts[0])-1)+"-"+(Integer.parseInt(parts[0]))+")".replace(" ","");
+          final String keyToCheckCurrent= selectedStanderd+"("+(Integer.parseInt(parts[0]))+"-"+(Integer.parseInt(parts[0])+1)+")".replace(" ","");
 
 
 
-          garbageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        garbageRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.exists()){
-                    int temp=0;
-                    for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
-                        Log.d("snap",snap.getKey());
-                        String[] parts=snap.getKey().split("th");
+                if(dataSnapshot.hasChild(keyToCheckPrevious)) {
 
-                        if(keyToCheck.equals(parts[1])) {
+                    migrateAndDeleteDialog(keyToCheckPrevious);
 
-                            if (parts[0].equals("11") || parts[0].equals("12")) {
-                                migrateAndDeleteDialog(snap.getKey());}
-                            break;
-                        }
+                }
 
-                        else if(temp==0){                       //will true only when there is no migrate or detected at temp=0
-                            uploadData(obj, pushId);}        //trigeering uploadData() at temp>0 will have anologous behaviour
+                else{
 
-                        temp++;
+                    if(!dataSnapshot.hasChild(keyToCheckCurrent))
+                    {
+
+                        Toast.makeText(getApplicationContext(),"creating "+keyToCheckCurrent+" for the first time",Toast.LENGTH_SHORT).show();
+                        garbageRef.child(keyToCheckCurrent).setValue("no");
                     }
-                }else{
+
+
                     uploadData(obj, pushId);
                 }
 
@@ -331,13 +329,22 @@ public class UploadActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {                              ////Migrating
 
-                        ref.child(newNodeKey12).setValue(dataSnapshot.getValue());
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            if(snapshot.getKey().equals("profile"))
+                            {
+                                ref.child(newNodeKey12).setValue(dataSnapshot.getValue());
+
+                            }
+                            snapshot.getRef().setValue(null);
+                        }
+
 
                         dataSnapshot.getRef().setValue(null);
 
-                        ref.child("DataManage/isMigrated_Deleted").child(keyToMigrate).setValue(null);
-                        ref.child("DataManage/isMigrated_Deleted").child(newNodeKey12).setValue("no");
-                        ref.child("DataManage/isMigrated_Deleted").child(newNodeKey11).setValue("no");
+                        garbageRef.child(keyToMigrate).setValue(null);
+                        garbageRef.child(newNodeKey12).setValue("no");
+                        garbageRef.child(newNodeKey11).setValue("no");
                         Toast.makeText(getApplicationContext(),"Migrating "+keyToMigrate+" to "+newNodeKey11
                                 +" successfull",Toast.LENGTH_SHORT).show();
 
@@ -356,7 +363,7 @@ public class UploadActivity extends AppCompatActivity {
                                     snapshot.getRef().setValue(null);
                                 }
 
-                                ref.child("DataManage/isMigrated_Deleted").child(keyToDelete).setValue(null);  //deleting othe rnodes
+                                garbageRef.child(keyToDelete).setValue(null);  //deleting othe rnodes
                                 Toast.makeText(getApplicationContext(),"Deleting "+keyToDelete+" to successfull",Toast.LENGTH_SHORT).show();
 
                             }

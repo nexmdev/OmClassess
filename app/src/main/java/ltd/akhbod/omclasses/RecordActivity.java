@@ -169,7 +169,7 @@ public class RecordActivity extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("snap", "onDataChanged()1");
+                Log.d("snap", "onDataChanged()1"+dataSnapshot);
                 if (dataSnapshot.exists()) {
                     Log.d("snap", "onDataChanged()");
                     int TOTAL_PRESENT = 0;

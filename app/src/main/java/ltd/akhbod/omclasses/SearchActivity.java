@@ -49,7 +49,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     //Activity variables
     DatePickerDialog datePickerDialog;
-    private String SearchTypeText,SelectedStanderdText,durationText;
+    private String SearchTypeText,SelectedStanderdText,durationText,keyToSearch;
 
     //firebase variables
     private DatabaseReference databaseRef;
@@ -110,7 +110,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SelectedStanderdText=parent.getItemAtPosition(position).toString();
-
+                getDurationQuery();
             }
 
             @Override
@@ -128,8 +128,9 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 progressBar.setVisibility(View.VISIBLE);
-                if(SearchTypeText.equals("student")) firebaseStudentSearch(s.toString());
-                else if(SearchTypeText.equals("date")) firebaseTestSearch(s.toString());
+
+                    if (SearchTypeText.equals("student")) firebaseStudentSearch(s.toString());
+                    else if (SearchTypeText.equals("date")) firebaseTestSearch(s.toString());
             }
 
             @Override
@@ -174,25 +175,38 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     private void getDurationQuery() {
 
-        databaseRef.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
-                if(dataSnapshot.exists()){
+            databaseRef.child("DataManage").child("isMigrated_Deleted").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int count = 0;
                     for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
-                        if (snap.getKey().contains("11th")) {
-                            String parts1[] = snap.getKey().split("11th");
-                            durationText = parts1[1];
+
+                        if (snap.getKey().contains(SelectedStanderdText)) {
+                            String parts[]=snap.getKey().split("th");
+                            durationText=parts[1];
+                            keyToSearch=snap.getKey();
+
+                            if (SearchTypeText.equals("student")) firebaseStudentSearch("");
+                            else if (SearchTypeText.equals("date")) firebaseTestSearch("");
+                            break;
                         }
-                    }
-                }
+                        count++;
+
+
+               
+                    if(count == dataSnapshot.getChildrenCount())
+                        Toast.makeText(getApplicationContext(),"No record Found For Given Class",Toast.LENGTH_SHORT).show();
+
+                
+
+
 
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}});
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}});
     }
 
 
@@ -202,8 +216,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
         Query query;
 
-            if(searchText.isEmpty())    query=databaseRef.child(SelectedStanderdText+durationText).child("profile").orderByChild("name");
-            else                        query=databaseRef.child(SelectedStanderdText+durationText).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
+            if(searchText.isEmpty())    query=databaseRef.child(keyToSearch).child("profile").orderByChild("name");
+            else                        query=databaseRef.child(keyToSearch).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
 
          FirebaseRecyclerAdapter<ProfileDetails,SearchByStudent_Search> studentAdapter=new FirebaseRecyclerAdapter <ProfileDetails, SearchByStudent_Search>(
                 ProfileDetails.class,
@@ -238,8 +252,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
         Query query;
 
-        if(searchText.isEmpty())    query=databaseRef.child(SelectedStanderdText+durationText).child("search").orderByKey();
-        else                        query=databaseRef.child(SelectedStanderdText+durationText).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
+        if(searchText.isEmpty())    query=databaseRef.child(keyToSearch).child("search").orderByKey();
+        else                        query=databaseRef.child(keyToSearch).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
 
         testAdapter=new FirebaseRecyclerAdapter <SearchByDateDetails,SearchByDate_Search>(
                 SearchByDateDetails.class,
