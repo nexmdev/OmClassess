@@ -324,7 +324,16 @@ public class UploadActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {                              ////Migrating
 
-                        ref.child(newNodeKey12).setValue(dataSnapshot.getValue());
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            if(snapshot.getKey().equals("profile"))
+                            {
+                                ref.child(newNodeKey12).setValue(dataSnapshot.getValue());
+
+                            }
+                            snapshot.getRef().setValue(null);
+                        }
+
 
                         dataSnapshot.getRef().setValue(null);
 
