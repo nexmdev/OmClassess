@@ -99,7 +99,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         httpApi = new ClickatellHttp("Abhijit_click", "U3zUw3cKSeaViiv_c5C1OA== ", "Abhijit@click");
         currentDate= new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
-
+        durationText= "("+currentYear+"-"+(currentYear+1)+")";
 
         mDateText=findViewById(R.id.TestManagment_dateText);
         mSubjectSpinner=findViewById(R.id.TestManagment_subjectSpinner);
@@ -211,6 +211,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
 
+
                 int count=0;
                 for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
@@ -218,11 +219,16 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                         keyToSearch=snap.getKey();
                         setFirebaseAdapter();
                         break;
-                    }
+
+               
                     count++;
                 }
+
                 if(count == dataSnapshot.getChildrenCount())
                     Toast.makeText(getApplicationContext(),"No record Found For Given Class",Toast.LENGTH_SHORT).show();
+
+                setFirebaseAdapter();
+
 
             }
 

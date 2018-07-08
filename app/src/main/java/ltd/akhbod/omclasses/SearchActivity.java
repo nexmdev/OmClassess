@@ -79,6 +79,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         int currentMonth= Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
         currentMonth--;
         int currentYear= Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
+        durationText= "("+currentYear+"-"+(currentYear+1)+")";
         datePickerDialog = new DatePickerDialog(
                 SearchActivity.this,  SearchActivity.this, currentYear,currentMonth,
                 currentDate);
@@ -180,6 +181,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
                     int count = 0;
                     for (  DataSnapshot snap : dataSnapshot.getChildren()) {
 
+
                         if (snap.getKey().contains(SelectedStanderdText)) {
                             String parts[]=snap.getKey().split("th");
                             durationText=parts[1];
@@ -191,11 +193,17 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
                         }
                         count++;
 
-                    }
+
+               
                     if(count == dataSnapshot.getChildrenCount())
                         Toast.makeText(getApplicationContext(),"No record Found For Given Class",Toast.LENGTH_SHORT).show();
 
-                }
+                
+
+
+
+            }
+
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}});

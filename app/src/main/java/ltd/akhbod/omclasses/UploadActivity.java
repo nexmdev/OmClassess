@@ -64,6 +64,7 @@ public class UploadActivity extends AppCompatActivity {
     private File actualImage;
     private File compressedImage;
     private String selectedStanderd;
+    private ProfileDetails obj;
 
 
     //layout variables
@@ -156,7 +157,7 @@ public class UploadActivity extends AppCompatActivity {
                     return;
                 }
 
-                ProfileDetails obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId);
+                obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId);
 
                 checkMigrationDeletion(obj,pushId);
             }});
@@ -189,6 +190,7 @@ public class UploadActivity extends AppCompatActivity {
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
                             cleanUpPage();
+                            garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
                         }})
 
 
@@ -271,6 +273,7 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+
                 if(dataSnapshot.hasChild(keyToCheckPrevious)) {
 
                     migrateAndDeleteDialog(keyToCheckPrevious);
@@ -285,6 +288,8 @@ public class UploadActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"creating "+keyToCheckCurrent+" for the first time",Toast.LENGTH_SHORT).show();
                         garbageRef.child(keyToCheckCurrent).setValue("no");
                     }
+
+
                     uploadData(obj, pushId);
                 }
 
@@ -370,7 +375,7 @@ public class UploadActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {}});
-
+                   uploadData(obj,pushId);
             }});
 
         builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
