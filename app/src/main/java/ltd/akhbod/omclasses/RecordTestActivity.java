@@ -44,7 +44,7 @@ public class RecordTestActivity extends AppCompatActivity {
     final ArrayList<String> mobNoArray=new ArrayList<>();
 
     //Firebase variables
-    DatabaseReference ref;
+    DatabaseReference ref,ref2;
     RecordTest adapter=null;
 
     @Override
@@ -61,6 +61,7 @@ public class RecordTestActivity extends AppCompatActivity {
         outOfMarks= Integer.parseInt(intent.getStringExtra("outofmarks"));
 
         ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
+        ref2 = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
         ref.keepSynced(true);
         getSupportActionBar().setTitle(mSelectedStanderd + " / " + key);
 
@@ -131,14 +132,14 @@ public class RecordTestActivity extends AppCompatActivity {
 
                      smsSendArray.add(finalCount,obj.getIsSmsSent());
 
-
-
-                    ref.child("profile").child(studentIdArray.get(finalCount)).child("mobNo")                     //getting mfor each present id
+                    ref2.child("profile").child(studentIdArray.get(finalCount)).child("mobNo")                     //getting mfor each present id
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    mobNoArray.add(finalCount, dataSnapshot.getValue().toString());
+                                    if(dataSnapshot.exists()){
+                                        mobNoArray.add(finalCount, dataSnapshot.getValue().toString());
+                                    }
 
 
                                     if (studentNamesArray.size() == finalId_name.length){

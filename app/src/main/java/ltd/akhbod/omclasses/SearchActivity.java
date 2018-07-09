@@ -203,6 +203,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
 
             }
+                }
 
 
                 @Override

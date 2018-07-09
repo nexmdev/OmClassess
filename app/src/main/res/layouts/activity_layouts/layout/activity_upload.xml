@@ -9,7 +9,20 @@
     android:padding="16dp"
     tools:context="ltd.akhbod.omclasses.UploadActivity">
 
-
+    <ProgressBar
+        android:id="@+id/upload_progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-7dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:elevation="1dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/red"
+        android:max="100"
+        android:progressTint="@color/colorAccent"
+        tools:visibility="invisible"
+        android:visibility="gone"/>
     <ImageView
         android:id="@+id/upload_image"
         android:layout_width="match_parent"
@@ -101,6 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="                                              "
+                android:inputType="number"
                 android:textColorLink="@android:color/holo_orange_dark" />
         </TableRow>
 
@@ -153,7 +167,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
         android:text="upload" />
 

@@ -115,10 +115,11 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
         mSubjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position==0) mSelectedSubject="physics";
+               /* if(position==0) mSelectedSubject="physics";
                 else if(position==1) mSelectedSubject="chemistry";
                 else
-                    mSelectedSubject="maths";
+                    mSelectedSubject="maths";*/
+                mSelectedSubject= parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -200,7 +201,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
     @Override
     protected void onStart() {
         super.onStart();
-
+        getDurationQuery();
     }
 
     private void getDurationQuery() {
@@ -209,7 +210,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
+               // Log.d("abhi","onDataChange()"+dataSnapshot.getChildrenCount());
 
 
                 int count=0;
@@ -218,18 +219,18 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     if (snap.getKey().contains(mSelectedClass)) {
                         keyToSearch=snap.getKey();
                         setFirebaseAdapter();
-                        break;
+                        count++;
 
-               
-                    count++;
                 }
 
-                if(count == dataSnapshot.getChildrenCount())
+                if(count == dataSnapshot.getChildrenCount()){
                     Toast.makeText(getApplicationContext(),"No record Found For Given Class",Toast.LENGTH_SHORT).show();
+                    break;}
 
-                setFirebaseAdapter();
+                   // setFirebaseAdapter();
 
 
+            }
             }
 
             @Override
@@ -241,11 +242,11 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
 
     private void setFirebaseAdapter() {
 
-        presentArray.clear();
+       /* presentArray.clear();
         studentIdArray.clear();
-        studentNamesArray.clear();
+        studentNamesArray.clear();*/
 
-        Log.d("abhi","setFirebaseAdapter()");
+        //Log.d("abhi","setFirebaseAdapter()");
 
         Query query=ref.child(keyToSearch).child("profile").orderByChild("name");
 
@@ -261,7 +262,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
             @Override
             protected void populateViewHolder(final PresentyList_testManagemnet viewHolder, final ProfileDetails model, final int position) {
 
-                Log.d("abhi",""+position);
+               // Log.d("abhi",""+position);
                 String present = "x";
                 if(presentArray.size()> position){
                      present = presentArray.get(position);
@@ -284,7 +285,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     }});
                 studentIdArray.add(position,model.getId());
                 studentNamesArray.add(position,model.getName());
-                presentArray.add(position,"yes");
+               // presentArray.add(position,"yes");
 
                 viewHolder.mPresenetLayout.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -292,7 +293,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     public void onClick(View v) {
                         viewHolder.mPresenetLayout.setBackgroundResource(R.color.green);
                         viewHolder.mAbsentLayout.setBackground(null);
-                        presentArray.set(position,"yes");
+                        presentArray.add(position,"yes");
                        // viewHolder.mView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.grey));
 
                         viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
@@ -306,7 +307,7 @@ public class TestManagmentActivity extends AppCompatActivity implements DatePick
                     public void onClick(View v) {
                         viewHolder.mAbsentLayout.setBackgroundResource(R.color.red);
                         viewHolder.mPresenetLayout.setBackground(null);
-                        presentArray.set(position,"no");
+                        presentArray.add(position,"no");
 
                         viewHolder.mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp);
                         viewHolder.mSendMessage.setEnabled(true);

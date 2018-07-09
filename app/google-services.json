@@ -1,39 +1,27 @@
 {
   "project_info": {
-    "project_number": "141077712097",
-    "firebase_url": "https://omclasses-2bc93.firebaseio.com",
-    "project_id": "omclasses-2bc93",
-    "storage_bucket": "omclasses-2bc93.appspot.com"
+    "project_number": "150636857061",
+    "firebase_url": "https://omclasses-master.firebaseio.com",
+    "project_id": "omclasses-master",
+    "storage_bucket": "omclasses-master.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:141077712097:android:6ed772c26555da8a",
+        "mobilesdk_app_id": "1:150636857061:android:6ed772c26555da8a",
         "android_client_info": {
           "package_name": "ltd.akhbod.omclasses"
         }
       },
       "oauth_client": [
         {
-          "client_id": "141077712097-thu14p0g4muq8h9ledsmc4kgfvlaij3u.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ltd.akhbod.omclasses",
-            "certificate_hash": "4e8a42f8f7ad6ecee26626179a8e228657bdf383"
-          }
-        },
-        {
-          "client_id": "141077712097-8i1nb5247dvjbr7ucit65aateam0bqq3.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "141077712097-8i1nb5247dvjbr7ucit65aateam0bqq3.apps.googleusercontent.com",
+          "client_id": "150636857061-oa1rul37nic22ek6p35h2vrfa78c03p5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAVShcv3z2a4XkYI9Q8GuPiDhSA-EngePI"
+          "current_key": "AIzaSyDGWkfoTlV9FuizOqwDeBLDmtGdPlwhGnU"
         }
       ],
       "services": {
@@ -41,69 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "141077712097-8i1nb5247dvjbr7ucit65aateam0bqq3.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:141077712097:android:7cd3258ef979f454",
-        "android_client_info": {
-          "package_name": "ltd.akhbod.studentapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "141077712097-693i08a8utrkpneg7s5iit31jsml8vcl.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ltd.akhbod.studentapp",
-            "certificate_hash": "4f7675c66b3ea35ed2dc514b6e1588bb1e9b202b"
-          }
-        },
-        {
-          "client_id": "141077712097-3d225duuihdqh4pkv7ggn9m5gphu72pu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ltd.akhbod.studentapp",
-            "certificate_hash": "4e8a42f8f7ad6ecee26626179a8e228657bdf383"
-          }
-        },
-        {
-          "client_id": "141077712097-8i1nb5247dvjbr7ucit65aateam0bqq3.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "141077712097-8i1nb5247dvjbr7ucit65aateam0bqq3.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAVShcv3z2a4XkYI9Q8GuPiDhSA-EngePI"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "141077712097-8i1nb5247dvjbr7ucit65aateam0bqq3.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

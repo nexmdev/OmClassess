@@ -136,6 +136,7 @@
                 android:padding="10dp">
 
                 <TextView
+                    android:id="@+id/record_physics_lable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -152,6 +153,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/record_chemistry_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"

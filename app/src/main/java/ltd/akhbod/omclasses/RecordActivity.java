@@ -159,6 +159,9 @@ public class RecordActivity extends AppCompatActivity {
             case 2:
                 subject = "chemistry";
                 makeQuery(subject);
+            case 3:
+                subject = "science";
+                makeQuery(subject);
         }
 
     }
@@ -181,12 +184,21 @@ public class RecordActivity extends AppCompatActivity {
                         }
                     }
                     String str = TOTAL_PRESENT + "/" + dataSnapshot.getChildrenCount();
+                    TextView label = (TextView)findViewById(R.id.record_physics_lable);
+                    LinearLayout label2 = (LinearLayout) findViewById(R.id.record_chemistry_label);
                     switch (subject) {
                         case "maths":
                             mathsAttendence.setText(str);
                             break;
                         case "physics":
                             physicsAttendence.setText(str);
+                            label.setText("Physics");
+                            label2.setVisibility(View.VISIBLE);
+                            break;
+                        case "science":
+                            physicsAttendence.setText(str);
+                            label.setText("Science");
+                            label2.setVisibility(View.GONE);
                             break;
                         default:
                             chemistryAttendence.setText(str);
@@ -328,11 +340,13 @@ public class RecordActivity extends AppCompatActivity {
         ((Button) v2).setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         ((Button) v2).setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
         v2.setEnabled(true);
+        ((Button) v2).setText("Select Message");
 
         v3.setBackgroundResource(R.color.colorPrimary);
         ((Button) v3).setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         ((Button) v3).setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
         v3.setEnabled(true);
+        ((Button) v3).setText("Select Message");
 
         v1.setBackgroundResource(R.color.grey);
         ((Button) v1).setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_done_black_24dp), null);

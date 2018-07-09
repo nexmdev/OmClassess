@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +66,7 @@ public class UploadActivity extends AppCompatActivity {
     private File compressedImage;
     private String selectedStanderd;
     private ProfileDetails obj;
-
+    private ProgressBar progressBar;
 
     //layout variables
     private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText,mDurationText;
@@ -99,6 +100,8 @@ public class UploadActivity extends AppCompatActivity {
         mDurationText=findViewById(R.id.upload_durationText);
         mSchoolEditText=findViewById(R.id.upload_school);
         mMobNoEditText=findViewById(R.id.upload_mobNo);
+        progressBar = (ProgressBar)findViewById(R.id.upload_progressbar) ;
+
 
         Button mUploadBtn = findViewById(R.id.upload_uploadBtn);
         //mOriginalImageText=findViewById(R.id.upload_originalKB);
@@ -134,6 +137,8 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                progressBar.setVisibility(View.VISIBLE);
+
                 String mNameText,mAddressText,mSchoolText,mMobNoText;
                 pushId= ref.push().getKey();
 
@@ -145,14 +150,18 @@ public class UploadActivity extends AppCompatActivity {
                 //validate data entry
                 if(mNameText.isEmpty()){
                     mNameEditText.setError("Please enter name");
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }else if(mAddressText.isEmpty()){
+                    progressBar.setVisibility(View.GONE);
                     mAddressEditText.setError("Please enter address");
                     return;
                 }else if(mSchoolText.isEmpty()){
+                    progressBar.setVisibility(View.GONE);
                     mSchoolEditText.setError("Please enter school");
                     return;
-                }else if(mMobNoText.length()>1){
+                }else if(mMobNoText.length()!= 10){
+                    progressBar.setVisibility(View.GONE);
                     mMobNoEditText.setError("Please enter valid mobile number");
                     return;
                 }
@@ -181,31 +190,13 @@ public class UploadActivity extends AppCompatActivity {
 
                 if (connected) {                                                                    //when online
 
+                    uploadPhoto(pushId, obj);
 
-                    ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj)
-
-
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
-                            cleanUpPage();
-                            garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
-                        }})
-
-
-                            .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
-                            Log.d("guddi","error="+e.getMessage());
-
-                        }});
                 }
 
                 else                                                                                //when offline
                     {
-
+                        uploadPhoto(pushId,obj);
                     Toast.makeText(getApplicationContext(),"offline uploaded successfully",Toast.LENGTH_SHORT).show();
 
                     ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj)
@@ -234,6 +225,30 @@ public class UploadActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void finalUpload(String pushId, ProfileDetails obj) {
+        ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj)
+
+
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
+                cleanUpPage();
+                garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
+            }})
+
+
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
+                Log.d("guddi","error="+e.getMessage());
+
+            }});
     }
 
 
@@ -314,13 +329,27 @@ public class UploadActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder=new AlertDialog.Builder(UploadActivity.this);
         builder.setTitle("Migration & Deletion");
-        builder.setMessage("1. "+keyToMigrate+" will migrate to next year\n2. "+keyToDelete+" will be delete \n"+
-                            "(  Note:students profile data will be added to recycle node)");
+        String message = "1. " + keyToMigrate + " will migrate to next year\n2. " + keyToDelete + " will be delete \n" +
+                "(  Note:students profile data will be added to recycle node)";
+        if(selectedStanderd.matches("10th")||selectedStanderd.matches("9th")||selectedStanderd.matches("8th")){
+            message = "Past year record("+(currentYear-1)+"-"+currentYear+") will be deleted !";
+        }
+
+        builder.setMessage(message);
         builder.setPositiveButton("Next", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-
+                if(selectedStanderd.matches("10th")||selectedStanderd.matches("9th")||selectedStanderd.matches("8th")){
+                    ref.child(selectedStanderd+"("+(currentYear-1)+"-"+currentYear+")").setValue(null)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(getApplicationContext(),"Past record deleted successfully!",Toast.LENGTH_SHORT).show();
+                                    uploadData(obj,pushId);
+                                }
+                            });
+                }
                 final String newNodeKey12="12th"+"("+mDurationText.getText().toString()+")";
                 final String newNodeKey11="11th"+"("+mDurationText.getText().toString()+")";
 
@@ -431,29 +460,49 @@ public class UploadActivity extends AppCompatActivity {
 
         Bitmap studentPhoto = BitmapFactory.decodeFile(compressedImage.getAbsolutePath());
         mImage.setImageBitmap(studentPhoto);
-        pushId= ref.push().getKey();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        Uri file = Uri.fromFile(compressedImage);
-        StorageReference storageRef = storage.getReference();
-        StorageReference studentPhotoRef = storageRef.child(selectedStanderd+"("+mDurationText.getText()+")/"+pushId);
-        UploadTask uploadTask = studentPhotoRef.putFile(file);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getApplicationContext(),"Photo upload failed !",Toast.LENGTH_SHORT).show();
-                studentPhotoUrl = "X";
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                studentPhotoUrl = taskSnapshot.getDownloadUrl().toString();
-                Toast.makeText(getApplicationContext(),"Success"+studentPhotoUrl,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        //uploadPhoto();
 
     }
 
+    private void uploadPhoto(String pushId, final ProfileDetails obj) {
+        pushId= ref.push().getKey();
+        final String finalPushId = pushId;
+        if(compressedImage != null){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            Uri file = Uri.fromFile(compressedImage);
+            StorageReference storageRef = storage.getReference();
+            StorageReference studentPhotoRef = storageRef.child(selectedStanderd+"("+mDurationText.getText()+")/"+pushId);
+            UploadTask uploadTask = studentPhotoRef.putFile(file);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(getApplicationContext(),"Photo upload failed !",Toast.LENGTH_SHORT).show();
+                    studentPhotoUrl = "X";
+                    finalUpload(finalPushId,obj);
+
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    studentPhotoUrl = taskSnapshot.getDownloadUrl().toString();
+                    if(studentPhotoUrl != null){
+                        obj.setImageUrl(studentPhotoUrl);
+                    }
+                    Toast.makeText(getApplicationContext(),"Photo upload Successful !",
+                            Toast.LENGTH_SHORT).show();
+                    finalUpload(finalPushId,obj);
+
+                }
+            });
+        }else{
+            studentPhotoUrl = "X";
+            finalUpload(finalPushId,obj);
+
+        }
+
+    }
 
 
     private String getReadableFileSize(long size) {
