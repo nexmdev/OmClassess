@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,8 +29,9 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
-                android:background="@color/colorAccent"
-                android:onClick="zoomStudentPhoto" />
+                android:background="@color/grey"
+                android:onClick="editPhoto"
+                app:srcCompat="@drawable/ic_control_point_black_24dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -64,9 +66,15 @@
 
                 <TextView
                     android:id="@+id/record_phoneno"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawableRight="@drawable/ic_create_black_24dp"
+                    android:onClick="editProfile"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
                     android:text="+918668737792"
                     android:textSize="16sp" />
 
@@ -80,12 +88,78 @@
             android:layout_below="@+id/top_profile_layout"
             android:background="@android:color/darker_gray" />
 
+        <TableLayout
+            android:id="@+id/fee_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/top_profile_layout"
+            android:layout_marginTop="10dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fee"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/record_add_fee_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_control_point_black_24dp"
+                    android:gravity="center"
+                    android:onClick="AddFee"
+                    android:paddingLeft="60dp"
+                    android:text="Add Fee"
+                    android:textColor="@color/green"
+                    android:textSize="16sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/white"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/record_fee_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="------"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/fee_details_textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="Add Fee"
+                    android:visibility="invisible" />
+
+            </TableRow>
+
+        </TableLayout>
+
         <LinearLayout
             android:id="@+id/call_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView8"
-            android:layout_marginTop="16dp"
+            android:layout_below="@+id/fee_table"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <Button
@@ -94,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_blue_dark"
+                android:background="@android:color/white"
                 android:onClick="callParents"
                 android:text="Call Parents" />
 
@@ -103,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_light"
+                android:background="@android:color/white"
                 android:text="Sms Parents" />
         </LinearLayout>
 
@@ -111,16 +185,197 @@
             android:id="@+id/record_getScoreCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
             android:layout_below="@+id/call_layout"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             android:background="@color/colorPrimary"
             android:text="GEt scorecard" />
+
+        <LinearLayout
+            android:id="@+id/lables_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/record_getScoreCard"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/physics_lable"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/colorButtonNormal"
+                android:elevation="3dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Physics" />
+
+            <TextView
+                android:id="@+id/chemistry_lable"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:background="?attr/colorButtonNormal"
+                android:elevation="3dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Chemistry" />
+
+            <TextView
+                android:id="@+id/maths_lable"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:background="?attr/colorButtonNormal"
+                android:elevation="3dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Maths" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/record_alternate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/lables_layout"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:id="@+id/physics_frame"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/physics_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:text=""
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/physics_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="30dp"
+                    android:text="" />
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/physics_cp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:cpb_background_progressbar_color="@color/grey"
+                    app:cpb_background_progressbar_width="5dp"
+                    app:cpb_progress="0"
+                    app:cpb_progress_max="100"
+                    app:cpb_progressbar_color="@color/green"
+                    app:cpb_progressbar_width="5dp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/chemistry_frame"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/chemistry_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:text=""
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chemistry_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="30dp"
+                    android:text="" />
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/chemistry_cp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:cpb_background_progressbar_color="@color/grey"
+                    app:cpb_background_progressbar_width="5dp"
+                    app:cpb_progress="0"
+                    app:cpb_progress_max="100"
+                    app:cpb_progressbar_color="@color/colorPrimary"
+                    app:cpb_progressbar_width="5dp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/maths_frame"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/maths_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:text=""
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/maths_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="30dp"
+                    android:text="" />
+
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/maths_cp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:cpb_background_progressbar_color="@color/grey"
+                    app:cpb_background_progressbar_width="5dp"
+                    app:cpb_progress="0"
+                    app:cpb_progress_max="100"
+                    app:cpb_progressbar_color="@android:color/holo_purple"
+                    app:cpb_progressbar_width="5dp" />
+            </FrameLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/record_subjectattendence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/record_getScoreCard"
+            android:layout_below="@+id/record_alternate_layout"
             android:layout_marginTop="10dp"
             android:baselineAligned="false"
             android:orientation="horizontal"
@@ -208,9 +463,9 @@
             android:id="@+id/record_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/record_subjectattendence"
+            android:layout_below="@+id/record_alternate_layout"
             android:layout_marginTop="10dp"
-            android:background="@color/green"
+            android:background="?attr/colorButtonNormal"
             android:orientation="horizontal"
             android:padding="10dp"
             android:visibility="gone">
@@ -219,7 +474,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="Date"
                 android:textSize="16sp" />
 
@@ -227,7 +482,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="Subject"
                 android:textSize="16sp" />
 
@@ -235,7 +490,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="Presenty"
                 android:textSize="16sp" />
 
@@ -243,7 +498,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="Marks"
                 android:textSize="16sp" />
 

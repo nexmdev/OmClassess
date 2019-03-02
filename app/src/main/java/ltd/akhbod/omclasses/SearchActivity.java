@@ -10,8 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -44,12 +44,13 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     private EditText mSearchField;
     private RecyclerView mRecyclerView;
     private ProgressBar progressBar;
-    private TextView noDataTextView;
+    private TextView noDataTextView,totalFee;
 
 
     //Activity variables
-    DatePickerDialog datePickerDialog;
-    private String SearchTypeText,SelectedStanderdText,durationText,keyToSearch;
+    private DatePickerDialog datePickerDialog;
+    private String SearchTypeText,SelectedStanderdText,durationText,keyToSearch,Subject = "X";
+    private int total = 0;
 
     //firebase variables
     private DatabaseReference databaseRef;
@@ -60,6 +61,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_search);
 
         getSupportActionBar().setTitle("Search Record");
@@ -74,6 +76,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         mRecyclerView = findViewById(R.id.result_list);
         progressBar = findViewById(R.id.search_progressBar);
         noDataTextView = findViewById(R.id.search_no_data_textview);
+        totalFee = findViewById(R.id.search_total_fee_textView);
 
         int currentDate= Integer.parseInt(new SimpleDateFormat("dd", Locale.getDefault()).format(new Date()));
         int currentMonth= Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
@@ -110,6 +113,15 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SelectedStanderdText=parent.getItemAtPosition(position).toString();
+                if(SelectedStanderdText.matches("11th")||SelectedStanderdText.matches("12th")){
+
+                }else{
+                    String[] temp = SelectedStanderdText.split("-");
+                    SelectedStanderdText = temp[0];
+                    Subject = temp[1];
+                }
+
+
                 getDurationQuery();
             }
 
@@ -195,10 +207,12 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
 
                
-                    if(count == dataSnapshot.getChildrenCount())
+                    if(count == dataSnapshot.getChildrenCount()){
                         Toast.makeText(getApplicationContext(),"No record Found For Given Class",Toast.LENGTH_SHORT).show();
-
-                
+                        noDataTextView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                        totalFee.setText("0000");}
 
 
 
@@ -214,11 +228,50 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
 
     private void firebaseStudentSearch(final String searchText) {
+        totalFee.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.INVISIBLE);
+        //noDataTextView.setVisibility(View.INVISIBLE);
+        DatabaseReference ref = null;
+        if(SelectedStanderdText.matches("11th")||SelectedStanderdText.matches("12th")){
+            ref = FirebaseDatabase.getInstance().getReference().child(keyToSearch).child("totalFee");
+        }else{
+            ref = FirebaseDatabase.getInstance().getReference().child(keyToSearch).child(Subject).child("totalFee");
+        }
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    totalFee.setText("Total fee : ₹."+dataSnapshot.getValue().toString());
+                }else {
+                    totalFee.setText("Total fee : ₹.0000");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         Query query;
 
-            if(searchText.isEmpty())    query=databaseRef.child(keyToSearch).child("profile").orderByChild("name");
-            else                        query=databaseRef.child(keyToSearch).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
+            if(searchText.isEmpty()){
+
+                if(SelectedStanderdText.matches("11th")||SelectedStanderdText.matches("12th")){
+                    query=databaseRef.child(keyToSearch).child("profile").orderByChild("fee");
+                }else{
+                    query=databaseRef.child(keyToSearch).child(Subject).child("profile").orderByChild("fee");
+                }
+            }else {
+                //query=databaseRef.child(keyToSearch).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
+                if(SelectedStanderdText.matches("11th")||SelectedStanderdText.matches("12th")){
+                    query=databaseRef.child(keyToSearch).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
+                }else{
+                    query=databaseRef.child(keyToSearch).child(Subject).child("profile").orderByChild("name").startAt(searchText).endAt(searchText+"\uf88f");
+                }
+            }
 
          FirebaseRecyclerAdapter<ProfileDetails,SearchByStudent_Search> studentAdapter=new FirebaseRecyclerAdapter <ProfileDetails, SearchByStudent_Search>(
                 ProfileDetails.class,
@@ -231,15 +284,20 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
                 if(getItemCount()==0){
                     noDataTextView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
                 }else{
+                    mRecyclerView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
                     noDataTextView.setVisibility(View.INVISIBLE);
                 }
             }
             @Override
             protected void populateViewHolder(SearchByStudent_Search viewHolder, final ProfileDetails model, int position) {
-                viewHolder.setDetails(model,getApplicationContext(),SelectedStanderdText,durationText);
-            }};
+
+                viewHolder.setDetails(model,getApplicationContext(),SelectedStanderdText,durationText,Subject,position);
+            }
+
+         };
 
         mRecyclerView.setAdapter(studentAdapter);
 
@@ -251,10 +309,28 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     private void firebaseTestSearch(final String searchText) {
 
-        Query query;
+        totalFee.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
 
-        if(searchText.isEmpty())    query=databaseRef.child(keyToSearch).child("search").orderByKey();
-        else                        query=databaseRef.child(keyToSearch).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
+        noDataTextView.setVisibility(View.INVISIBLE);
+        Query query = null;
+
+        if(searchText.isEmpty()){
+            if(SelectedStanderdText.matches("11th")||SelectedStanderdText.matches("12th")){
+                query=databaseRef.child(keyToSearch).child("search").orderByKey();
+            }else{
+                query=databaseRef.child(keyToSearch).child(Subject).child("search").orderByKey();
+            }
+
+
+        }else{
+            if(SelectedStanderdText.matches("11th")||SelectedStanderdText.matches("12th")){
+                query=databaseRef.child(keyToSearch).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
+            }else{
+                query=databaseRef.child(keyToSearch).child(Subject).child("search").orderByKey().startAt(searchText).endAt(searchText+"\uf88f");
+            }
+
+        }
 
         testAdapter=new FirebaseRecyclerAdapter <SearchByDateDetails,SearchByDate_Search>(
                 SearchByDateDetails.class,
@@ -275,12 +351,12 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             protected void populateViewHolder(SearchByDate_Search viewHolder, final SearchByDateDetails model, int position) {
                 final String key=testAdapter.getRef(position).getKey();
-                viewHolder.setDetails(model,getApplicationContext(),key,searchText,SelectedStanderdText,durationText);
+                viewHolder.setDetails(model,getApplicationContext(),key,searchText,SelectedStanderdText,durationText,Subject);
             }};
 
 
         mRecyclerView.setAdapter(testAdapter);
-        progressBar.setVisibility(View.INVISIBLE);
+       // progressBar.setVisibility(View.INVISIBLE);
 
     }
 

@@ -34,18 +34,21 @@ public class RecordTestActivity extends AppCompatActivity {
 
 
     //Activity variables
-    String key=null,totalPresent,mSelectedStanderd,durationText;
-    int outOfMarks;
-    ArrayList<String> marksArray=new ArrayList<>();
-    String[] nosToUpload=null;
-    final ArrayList<String> studentIdArray=new ArrayList<>();
-    final ArrayList<String> studentNamesArray=new ArrayList<>();
-    final ArrayList<Boolean> smsSendArray=new ArrayList<>();
-    final ArrayList<String> mobNoArray=new ArrayList<>();
+    private String key=null;
+    private String totalPresent;
+    private String mSelectedStanderd,Subject;
+    private String durationText;
+    private int outOfMarks;
+    private ArrayList<String> marksArray=new ArrayList<>();
+    private final ArrayList<String> studentIdArray=new ArrayList<>();
+    private final ArrayList<String> studentNamesArray=new ArrayList<>();
+    private final ArrayList<Boolean> smsSendArray=new ArrayList<>();
+    private final ArrayList<String> mobNoArray=new ArrayList<>();
 
     //Firebase variables
-    DatabaseReference ref,ref2;
-    RecordTest adapter=null;
+    private DatabaseReference ref;
+    private DatabaseReference ref2;
+    private RecordTest adapter=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +62,16 @@ public class RecordTestActivity extends AppCompatActivity {
         key = intent.getStringExtra("key");
         totalPresent=intent.getStringExtra("totalPresent");
         outOfMarks= Integer.parseInt(intent.getStringExtra("outofmarks"));
+        Subject = intent.getStringExtra("subject");
 
-        ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
-        ref2 = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
+        if(mSelectedStanderd.matches("11th")||mSelectedStanderd.matches("12th")){
+            ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
+            ref2 = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText);
+        }else{
+            ref = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child(Subject);
+            ref2 = FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child(Subject);
+        }
+
         ref.keepSynced(true);
         getSupportActionBar().setTitle(mSelectedStanderd + " / " + key);
 
@@ -81,12 +91,6 @@ public class RecordTestActivity extends AppCompatActivity {
         });
 
         seperateId_Name();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
     }
 
@@ -122,7 +126,7 @@ public class RecordTestActivity extends AppCompatActivity {
             ref.child("record").child(studentIdArray.get(finalCount)+"/"+key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("snap",""+dataSnapshot);
+
                     RecordDetails obj=dataSnapshot.getValue(RecordDetails.class);
 
                     if (!obj.getMarks().equals("00"))
@@ -150,7 +154,7 @@ public class RecordTestActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-                                    Log.d("sms","profile:"+databaseError.getMessage());
+
                                 }
                             });
 
@@ -158,7 +162,7 @@ public class RecordTestActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError)
-                {  Log.d("sms","record"+databaseError.getMessage());}});
+                {  }});
 
 
 
@@ -179,8 +183,9 @@ public class RecordTestActivity extends AppCompatActivity {
 
     private void uploadMarks() {
 
+        mProgressBar.setVisibility(View.VISIBLE);
         marksArray=adapter.getMarks();
-        nosToUpload = adapter.getNosToUpload();
+        String[] nosToUpload = adapter.getNosToUpload();
         int count=0;
 
         while (count < studentIdArray.size() )
@@ -196,7 +201,13 @@ public class RecordTestActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "Upload Successful !", Toast.LENGTH_SHORT).show();
+
+
+                            if((finalCount+1) == studentIdArray.size()){
+                                mProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), "Upload Successful - "+finalCount+1, Toast.LENGTH_SHORT).show();
+                            }
+
                     }})
 
 
@@ -204,11 +215,12 @@ public class RecordTestActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getApplicationContext(), finalCount+" uploading failed", Toast.LENGTH_SHORT).show();
-                        Log.d("data", e.getMessage());
+
                     }});
             }
 
             count++;
+
         }
 
     }
@@ -216,7 +228,7 @@ public class RecordTestActivity extends AppCompatActivity {
 
     private void setAdapter() {
         adapter=new RecordTest(getApplicationContext(),marksArray,studentIdArray,
-                studentNamesArray,key,studentNamesArray.size(),smsSendArray,mobNoArray,mSelectedStanderd,durationText,outOfMarks);
+                studentNamesArray,key,studentNamesArray.size(),smsSendArray,mobNoArray,mSelectedStanderd,durationText,outOfMarks,Subject);
         mListView.setAdapter(adapter);
     }
 

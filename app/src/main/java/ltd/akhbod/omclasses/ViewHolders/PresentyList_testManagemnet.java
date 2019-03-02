@@ -34,23 +34,47 @@ public class PresentyList_testManagemnet extends RecyclerView.ViewHolder{
     }
 
 
-    public void setDetails(Context applicationContext, ProfileDetails model, final int position,String present) {
+    public void setDetails(Context applicationContext, ProfileDetails model, final int position, String present, String isSmsSent) {
 
-        mName.setText(position+1+". "+model.getName());
+        String[] strings = model.getName().trim().split("\\s+");
+        String name = "";
+        if(strings.length == 3){
+            name = strings[0]+" "+strings[2];
+        }else{
+            name = model.getName();
+        }
+        mName.setText(position+1+". "+name);
+
+
+        if(isSmsSent.equals("no")){
+            mSendMessage.setImageResource(android.R.color.transparent);
+            mSendMessage.setEnabled(true);
+        }
+        else{
+            mSendMessage.setEnabled(false);
+            mSendMessage.setImageResource(R.drawable.ic_done_black_24dp);
+        }
+
+
+
         if(present.matches("yes")){
             mPresenetLayout.setBackgroundResource(R.color.green);
             mAbsentLayout.setBackground(null);
+
             mSendMessage.setEnabled(false);
-        }else if(present.matches("x")){
-            mPresenetLayout.setBackground(null);
-            mAbsentLayout.setBackground(null);
-           // mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
-            mSendMessage.setEnabled(false);
-        }else{
-            mAbsentLayout.setBackgroundResource(R.color.red);
-            mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp);
-            mSendMessage.setEnabled(true);
+            mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+
         }
+        else if(present.matches("no")){
+            mAbsentLayout.setBackgroundResource(R.color.red);
+            mPresenetLayout.setBackground(null);
+
+            if(isSmsSent.equals("yes")) {
+                mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp_grey);
+            }else
+            {
+                mSendMessage.setBackgroundResource(R.drawable.ic_message_black_24dp);
+            }}
 
     }
 }

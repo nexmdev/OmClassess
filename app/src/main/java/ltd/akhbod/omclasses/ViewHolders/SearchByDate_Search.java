@@ -48,11 +48,11 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
 
 
     public void setDetails(final SearchByDateDetails model, final Context applicationContext, final String key,
-                           String searchText, final String mSelectedStanderdText, final String durationText) {
+                           String searchText, final String mSelectedStanderdText, final String durationText,final String subject) {
 
         mName.setText(key);
 
-         mName.setOnClickListener(new View.OnClickListener() {
+         mView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -64,6 +64,7 @@ public class SearchByDate_Search extends RecyclerView.ViewHolder {
                 intent.putExtra("class",mSelectedStanderdText);
                 intent.putExtra("duration",durationText);
                 intent.putExtra("outofmarks",""+model.getOutOfMarks());
+                intent.putExtra("subject",subject);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 applicationContext.startActivity(intent);
 

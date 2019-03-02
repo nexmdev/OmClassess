@@ -2,6 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:background="@drawable/round_dialog_background"
     android:orientation="vertical"
     android:padding="25dp">
 
@@ -9,11 +12,10 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/grey"
         android:gravity="center_horizontal"
         android:padding="10dp"
         android:text="Login"
-        android:textColor="@android:color/white"
         android:textSize="16sp" />
 
     <EditText
@@ -57,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:background="@color/green"
+        android:background="@drawable/rounded_button"
         android:text="OK" />
 
 </LinearLayout>

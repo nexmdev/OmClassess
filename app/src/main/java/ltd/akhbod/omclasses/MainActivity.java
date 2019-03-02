@@ -3,6 +3,8 @@ package ltd.akhbod.omclasses;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -69,11 +70,12 @@ public class MainActivity extends AppCompatActivity {
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.login_dialog_layout);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
        // dialog.setCanceledOnTouchOutside(true);
 
         final Button ok = dialog.findViewById(R.id.login_ok_button);
-        final TextView prompt = (TextView)dialog.findViewById(R.id.login_wrong_propmt);
-        final ProgressBar progress = (ProgressBar)dialog.findViewById(R.id.login_progressbar);
+        final TextView prompt = dialog.findViewById(R.id.login_wrong_propmt);
+        final ProgressBar progress = dialog.findViewById(R.id.login_progressbar);
         final EditText user = dialog.findViewById(R.id.login_username);
         final EditText password = dialog.findViewById(R.id.login_password);
         final SharedPreferences preferences = getSharedPreferences("USER",MODE_PRIVATE);

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
 
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="10dp"
     tools:context="ltd.akhbod.omclasses.UploadActivity">
 
     <ProgressBar
@@ -21,23 +21,23 @@
         android:indeterminateTint="@color/red"
         android:max="100"
         android:progressTint="@color/colorAccent"
-        tools:visibility="invisible"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="invisible" />
+
     <ImageView
         android:id="@+id/upload_image"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
-        android:background="@color/colorPrimary"
+        android:background="@color/green"
         app:srcCompat="@drawable/ic_person_black_24dp" />
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp">
+        android:paddingBottom="10dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -78,11 +78,13 @@
                 android:layout_marginRight="10dp"
                 android:hint="                                              "
                 android:textColorLink="@android:color/holo_orange_dark" />
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:paddingLeft="10dp">
 
             <TextView
@@ -95,7 +97,34 @@
                 android:id="@+id/upload_standeredSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
+                android:popupBackground="@android:color/white"
                 android:textColorLink="@android:color/holo_orange_dark" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/subject_checkbox_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="5dp"
+            android:visibility="invisible">
+
+            <CheckBox
+                android:id="@+id/checkBox_maths"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="maths" />
+
+            <CheckBox
+                android:id="@+id/checkBox_science"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="science" />
+
         </TableRow>
 
         <TableRow
@@ -168,7 +197,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginTop="10dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/rounded_button"
         android:text="upload" />
 
 

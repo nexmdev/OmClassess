@@ -6,19 +6,29 @@ package ltd.akhbod.omclasses.ModalClasses;
 
 public class ProfileDetails {
 
-    String name,address,school,imageUrl,mobNo,id;
+    String name,address,school,imageUrl,mobNo,id,fee,feedetails;
 
     public ProfileDetails(){
 
     }
 
-    public ProfileDetails(String name, String address, String school, String imageUrl, String mobNo, String id) {
+    public ProfileDetails(String name, String address, String school, String imageUrl, String mobNo, String id,String mFee,String mdetails) {
         this.name = name;
         this.address = address;
         this.school = school;
         this.imageUrl = imageUrl;
         this.mobNo = mobNo;
         this.id = id;
+        this.fee = mFee;
+        this.feedetails = mdetails;
+    }
+
+    public String getFeedetails() {
+        return feedetails;
+    }
+
+    public void setFeedetails(String feedetails) {
+        this.feedetails = feedetails;
     }
 
     public String getName() {
@@ -27,6 +37,11 @@ public class ProfileDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public String getFee(){return fee;}
+
+    public void setFee(String mfee) {
+        this.fee = mfee;
     }
 
     public String getAddress() {

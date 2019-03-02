@@ -10,22 +10,23 @@ import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,6 +49,7 @@ import com.mvc.imagepicker.ImagePicker;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -71,9 +73,11 @@ public class UploadActivity extends AppCompatActivity {
     //layout variables
     private EditText mNameEditText,mAddressEditText,mSchoolEditText,mMobNoEditText,mDurationText;
     private ImageView mImage;
-    private TextView mOriginalImageText,mProcessesImageText;
+    // --Commented out by Inspection (10-07-2018 18:45):private TextView mOriginalImageText,mProcessesImageText;
     private String pushId,studentPhotoUrl = "X";
+    ArrayList<String> subjects = new ArrayList<>();
     private int currentYear;
+    private TableRow subjectRow;
 
     //firebase variables
     private DatabaseReference ref,garbageRef;
@@ -100,8 +104,8 @@ public class UploadActivity extends AppCompatActivity {
         mDurationText=findViewById(R.id.upload_durationText);
         mSchoolEditText=findViewById(R.id.upload_school);
         mMobNoEditText=findViewById(R.id.upload_mobNo);
-        progressBar = (ProgressBar)findViewById(R.id.upload_progressbar) ;
-
+        progressBar = findViewById(R.id.upload_progressbar);
+        subjectRow = findViewById(R.id.subject_checkbox_layout);
 
         Button mUploadBtn = findViewById(R.id.upload_uploadBtn);
         //mOriginalImageText=findViewById(R.id.upload_originalKB);
@@ -110,12 +114,18 @@ public class UploadActivity extends AppCompatActivity {
 
         mDurationText.setText(selectedDuration);
 
-        ArrayAdapter standerdAdapter=ArrayAdapter.createFromResource(this,R.array.class_name,android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter standerdAdapter=ArrayAdapter.createFromResource(this,R.array.class_name_two,android.R.layout.simple_spinner_dropdown_item);
         mStanderedSpinner.setAdapter(standerdAdapter);
         mStanderedSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
              selectedStanderd=parent.getItemAtPosition(position).toString();
+                if(selectedStanderd.matches("10th")||selectedStanderd.matches("9th")||
+                        selectedStanderd.matches("8th")){
+                    subjectRow.setVisibility(View.VISIBLE);
+                }else{
+                    subjectRow.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
@@ -125,7 +135,7 @@ public class UploadActivity extends AppCompatActivity {
         });
 
         selectedStanderd="11th";
-        
+
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +150,18 @@ public class UploadActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
 
                 String mNameText,mAddressText,mSchoolText,mMobNoText;
+
+                if(subjectRow.getVisibility()==View.VISIBLE){
+                    CheckBox m = findViewById(R.id.checkBox_maths);
+                    CheckBox s = findViewById(R.id.checkBox_science);
+                    if(m.isChecked()){
+                        subjects.add("maths");
+                    }
+                    if(s.isChecked()){
+                        subjects.add("science");
+                    }
+
+                }
                 pushId= ref.push().getKey();
 
                 mNameText=mNameEditText.getText().toString();
@@ -166,7 +188,7 @@ public class UploadActivity extends AppCompatActivity {
                     return;
                 }
 
-                obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId);
+                obj=new ProfileDetails(mNameText,mAddressText,mSchoolText,studentPhotoUrl,mMobNoText,pushId,"Not Paid","x");
 
                 checkMigrationDeletion(obj,pushId);
             }});
@@ -228,27 +250,61 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void finalUpload(String pushId, ProfileDetails obj) {
-        ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId).setValue(obj)
+        DatabaseReference tempRef = ref;
+        if(selectedStanderd.matches("11th")||selectedStanderd.matches("12th")){
+            tempRef = ref.child(selectedStanderd+"("+mDurationText.getText()+")").child("profile").child(pushId);
+            tempRef.setValue(obj)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
+                            cleanUpPage();
+                            garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
+                        }})
 
 
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
-                cleanUpPage();
-                garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
-            }})
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
 
 
-                .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
-                Log.d("guddi","error="+e.getMessage());
+                        }});
+        }else{
+            int i = 0;
+            while (i<subjects.size()){
+                tempRef = ref.child(selectedStanderd+"("+mDurationText.getText()+")").child(subjects.get(i)).child("profile").child(pushId);
+                i++;
+                final int finalI = i;
+                tempRef.setValue(obj)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
 
-            }});
+                                if(finalI ==subjects.size()){
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(getApplicationContext(),"uploaded successfully",Toast.LENGTH_SHORT).show();
+                                    cleanUpPage();
+                                    garbageRef.child(selectedStanderd+"("+mDurationText.getText()+")").setValue("yes");
+                                }
+
+                            }})
+
+
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(),"uploaded failed!!!",Toast.LENGTH_SHORT).show();
+
+
+                            }});
+
+            }
+
+        }
+
     }
 
 
@@ -264,6 +320,10 @@ public class UploadActivity extends AppCompatActivity {
         mMobNoEditText.setText("");
         studentPhotoUrl="X";
         mSchoolEditText.setText("");
+        mImage.setImageResource(R.drawable.ic_person_black_24dp);
+        //subjectRow.setVisibility(View.GONE);
+        subjects.clear();
+
 
     }
 
@@ -300,7 +360,7 @@ public class UploadActivity extends AppCompatActivity {
                     if(!dataSnapshot.hasChild(keyToCheckCurrent))
                     {
 
-                        Toast.makeText(getApplicationContext(),"creating "+keyToCheckCurrent+" for the first time",Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(getApplicationContext(),"creating "+keyToCheckCurrent+" for the first time",Toast.LENGTH_SHORT).show();
                         garbageRef.child(keyToCheckCurrent).setValue("no");
                     }
 
@@ -456,7 +516,7 @@ public class UploadActivity extends AppCompatActivity {
       //  mProcessesImageText.setText(String.format("Size : %s", getReadableFileSize(compressedImage.length())));
 
      //   Toast.makeText(this, "Compressed image save in " + compressedImage.getPath(), Toast.LENGTH_LONG).show();
-        Log.d("Compressor", "Compressed image save in " + compressedImage.getPath());
+
 
         Bitmap studentPhoto = BitmapFactory.decodeFile(compressedImage.getAbsolutePath());
         mImage.setImageBitmap(studentPhoto);
@@ -465,7 +525,7 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void uploadPhoto(String pushId, final ProfileDetails obj) {
-        pushId= ref.push().getKey();
+        //pushId= ref.push().getKey();
         final String finalPushId = pushId;
         if(compressedImage != null){
             FirebaseStorage storage = FirebaseStorage.getInstance();

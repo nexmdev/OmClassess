@@ -42,11 +42,12 @@ public class RecordTest extends BaseAdapter {
     final String subjectOfTest;
     final String mSelectedStanderd;
     final String durationText;
-    final String TotalMarks;
+    final String TotalMarks,Subject;
 
 
     public RecordTest(Context c, ArrayList<String> marksArray, ArrayList<String> studentIds, ArrayList<String> studentNames,
-                      String key, int totalCount, ArrayList<Boolean> smsSendArray, ArrayList<String> mobNoArray, String mSelectedStanderd, String durationText,int totalMarks){
+                      String key, int totalCount, ArrayList<Boolean> smsSendArray, ArrayList<String> mobNoArray, String mSelectedStanderd, String durationText,int totalMarks,
+                      String subject){
         this.c=c;
         this.key=key;
         this.noToUpload=new String[totalCount];
@@ -54,6 +55,7 @@ public class RecordTest extends BaseAdapter {
         this.mSelectedStanderd= mSelectedStanderd;
         this.durationText= durationText;
         this.TotalMarks = String.valueOf(totalMarks);
+        this.Subject = subject;
 
         this.marksArray=marksArray;
         this.studentIdArray=studentIds;
@@ -150,7 +152,16 @@ public class RecordTest extends BaseAdapter {
         }
 
         mPosition.setText(position+1+")");
-        mName.setText(studentNamesArray.get(position));
+        String[] strings = studentNamesArray.get(position).trim().split("\\s+");
+        String name = "";
+        if(strings.length == 3){
+            name = strings[0]+" "+strings[2];
+        }else{
+            name =studentNamesArray.get(position);
+        }
+        mName.setText(name);
+
+
 
         return row;
     }
@@ -161,11 +172,19 @@ public class RecordTest extends BaseAdapter {
 
         String test = "आपला पाल्य "+name+" ला दि."+dateOfTest+" ला झालेल्या " +subjectOfTest +" च्या टेस्टमध्ये "+TotalMarks+" पैकी "+marks+" मार्कस मिळाले. ओम क्लासेस";
         ArrayList<String> parts = manager.divideMessage(test);
-        manager.sendMultipartTextMessage("+917775971543",null,parts,null,null);
+        manager.sendMultipartTextMessage(mobNo,null,parts,null,null);
 
-        FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child("record")
-                .child(studentIdArray.get(position) + "/" + key + "/" + "isSmsSent")
-                .setValue(true);
+        if(mSelectedStanderd.matches("11th")||mSelectedStanderd.matches("12th")){
+            FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child("record")
+                    .child(studentIdArray.get(position) + "/" + key + "/" + "isSmsSent")
+                    .setValue(true);
+
+        }else{
+            FirebaseDatabase.getInstance().getReference().child(mSelectedStanderd+durationText).child(Subject).child("record")
+                    .child(studentIdArray.get(position) + "/" + key + "/" + "isSmsSent")
+                    .setValue(true);
+
+        }
 
     }
 

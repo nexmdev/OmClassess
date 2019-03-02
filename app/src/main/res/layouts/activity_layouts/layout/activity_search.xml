@@ -8,13 +8,24 @@
     tools:context="ltd.akhbod.omclasses.SearchActivity">
 
 
+    <TextView
+        android:id="@+id/search_total_fee_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/green"
+        android:gravity="right"
+        android:padding="10dp"
+        android:text="Total Fee : 0000"
+        android:textSize="16sp" />
+
     <LinearLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="10dp">
 
         <TextView
             android:layout_width="0dp"
@@ -29,13 +40,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:popupBackground="@android:color/white"/>
 
         <Spinner
             android:id="@+id/search_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:popupBackground="@android:color/white"
             android:textSize="24sp" />
 
     </LinearLayout>
@@ -47,7 +60,7 @@
         android:layout_below="@+id/top"
         android:background="@android:color/white"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="10dp">
 
         <EditText
             android:id="@+id/search_field"
@@ -79,7 +92,6 @@
             app:srcCompat="@drawable/ic_action_search" />
 
 
-
     </LinearLayout>
 
 
@@ -88,7 +100,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/below"
-        android:padding="16dp" >
+        android:layout_marginBottom="35dp"
+        android:padding="10dp">
 
     </android.support.v7.widget.RecyclerView>
 

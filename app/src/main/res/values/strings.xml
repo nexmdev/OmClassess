@@ -10,9 +10,21 @@
     <string-array name="class_name">
         <item>11th</item>
         <item>12th</item>
+        <item>10th-maths</item>
+        <item>10th-science</item>
+        <item>9th-maths</item>
+        <item>9th-science</item>
+        <item>8th-maths</item>
+        <item>8th-science</item>
+
+    </string-array>
+    <string-array name="class_name_two">
+        <item>11th</item>
+        <item>12th</item>
         <item>10th</item>
         <item>9th</item>
         <item>8th</item>
+
 
     </string-array>
 
